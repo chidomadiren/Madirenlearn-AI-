@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="270" viewBox="0 0 360 270" fill="none">
+  <defs>
+    <linearGradient id="coverGreen" x1="72" y1="74" x2="284" y2="165" gradientUnits="userSpaceOnUse"><stop stop-color="#57AA78"/><stop offset="1" stop-color="#17633D"/></linearGradient>
+    <linearGradient id="coverBlue" x1="61" y1="151" x2="290" y2="218" gradientUnits="userSpaceOnUse"><stop stop-color="#91B2D2"/><stop offset="1" stop-color="#4E7099"/></linearGradient>
+    <linearGradient id="coverAmber" x1="56" y1="193" x2="291" y2="248" gradientUnits="userSpaceOnUse"><stop stop-color="#EBA84D"/><stop offset="1" stop-color="#B9692E"/></linearGradient>
+    <linearGradient id="pages" x1="76" y1="164" x2="291" y2="204" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFDF4"/><stop offset="1" stop-color="#E8E4D9"/></linearGradient>
+    <filter id="shadow" x="12" y="18" width="342" height="245" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feGaussianBlur stdDeviation="12"/></filter>
+  </defs>
+  <ellipse cx="184" cy="226" rx="129" ry="20" fill="#183C2B" fill-opacity=".16" filter="url(#shadow)"/>
+  <!-- Bottom book -->
+  <path d="M69 188 249 156q9-2 15 4l29 28q4 4 4 10v27q0 8-8 10L111 263q-8 1-13-5l-31-31q-4-4-4-10v-20q0-7 6-9Z" fill="url(#pages)"/>
+  <path d="m61 185 184-34q9-2 16 4l29 27-188 39q-8 2-14-4l-28-25q-7-6 1-7Z" fill="#FFFDF5"/>
+  <path d="m62 191 183-34q7-1 13 3l28 22-186 39q-7 1-12-3l-27-23q-6-4 1-4Z" fill="url(#coverAmber)"/>
+  <path d="m96 221 190-40v36q0 7-8 9l-171 31q-8 1-12-5l-18-18q-5-7 3-9l16-4Z" fill="#C77836"/>
+  <path d="m75 225 20 19 1 5-18-18q-4-4-3-6Z" fill="#A85E2B"/>
+  <path d="m103 224 176-37" stroke="#F7D6A0" stroke-opacity=".75" stroke-width="3" stroke-linecap="round"/>
+  <path d="m102 223 181-38v6l-181 38v-6Zm7 9 174-37v5l-174 38v-6Z" fill="#F7D6A0" fill-opacity=".68"/>
+  <!-- Middle book -->
+  <path d="m77 143 185-37q8-2 14 4l24 23q5 4 5 10v26q0 8-8 10l-175 35q-8 2-14-4l-27-25q-4-4-4-10v-24q0-7 6-8Z" fill="url(#pages)"/>
+  <path d="m69 140 187-37q8-2 14 4l28 25-190 39q-8 2-14-4l-28-20q-7-5 3-7Z" fill="#FDFCF6"/>
+  <path d="m72 147 184-37q7-1 12 3l26 22-190 40q-7 1-12-3l-23-20q-7-4 3-5Z" fill="url(#coverBlue)"/>
+  <path d="m99 176 193-40v28q0 8-8 10l-177 36q-8 2-13-4l-19-18q-4-6 4-9l20-3Z" fill="#577A9F"/>
+  <path d="m79 180 19 18 2 6-20-19q-4-3-1-5Z" fill="#426487"/>
+  <path d="m108 178 179-37" stroke="#D9E7F1" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/>
+  <path d="m106 178 180-38v6l-180 38v-6Zm6 9 174-37v5l-174 38v-6Z" fill="#D9E7F1" fill-opacity=".75"/>
+  <!-- Top book -->
+  <path d="m90 76 161-34q12-3 20 6l24 27q5 5 5 12v50q0 11-11 13l-163 34q-11 2-19-6l-24-25q-5-5-5-12V92q0-12 12-16Z" fill="#E8E2D4"/>
+  <path d="m79 73 166-35q12-3 20 6l25 27-170 39q-10 2-18-5L78 85q-8-8 1-12Z" fill="#FAF8EE"/>
+  <path d="m89 78 155-33q10-2 17 5l22 24q4 4 4 10v48q0 10-10 12l-157 33q-10 2-17-5l-22-23q-4-4-4-10V93q0-12 12-15Z" fill="url(#coverGreen)"/>
+  <path d="m94 84 146-31q8-2 14 4l18 19-156 34q-7 2-13-3L90 95q-5-6 4-11Z" fill="#78BD91" fill-opacity=".55"/>
+  <path d="m248 51 9-2q8-2 14 5l22 23q4 4 4 10v49q0 9-9 11l-9 2V95q0-7-5-12l-26-32Z" fill="#155A38" fill-opacity=".8"/>
+  <path d="m86 88 8 4v56q0 8 5 13l10 10-9 2-12-12q-5-5-5-12V96q0-5 3-8Z" fill="#155A38" fill-opacity=".62"/>
+  <path d="m98 153 148-31" stroke="#B6DCC1" stroke-opacity=".54" stroke-width="2" stroke-linecap="round"/>
+  <path d="m99 158 145-31" stroke="#D7EBDD" stroke-opacity=".38" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="m104 71 139-30q9-2 15 4" stroke="#F6FFF7" stroke-opacity=".62" stroke-width="3" stroke-linecap="round"/>
+  <!-- Debossed cover emblem -->
+  <path d="M145 99c12-3 23-1 33 5l4 26c-10-5-21-7-33-4l-4-27Z" fill="#FFFDF4"/>
+  <path d="M186 104c10-9 22-14 35-16l5 27c-13 2-24 7-36 15l-4-26Z" fill="#FFFDF4"/>
+  <path d="m182 104 5 31" stroke="#D7EBDD" stroke-width="3" stroke-linecap="round"/>
+</svg>
