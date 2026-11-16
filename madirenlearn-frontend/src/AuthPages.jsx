@@ -33,7 +33,8 @@ export function AuthPage({ onAuthenticated }) {
       if (!data.token || !data.user) throw new Error('The server did not return a sign-in session (no token or user in response). Please try again.');
       localStorage.setItem('madirenlearn-token', data.token);
       localStorage.setItem('madirenlearn-user', JSON.stringify(data.user));
-      onAuthenticated(data.user);
+      // Pass the full session object { token, user } to handleAuthenticated
+      onAuthenticated({ token: data.token, user: data.user });
     } catch (requestError) {
       setError(requestError instanceof TypeError ? 'Cannot reach the MadirenLearn server. Check that the backend is running.' : requestError.message);
     } finally {

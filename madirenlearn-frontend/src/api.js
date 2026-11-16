@@ -1,5 +1,7 @@
 export const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/$/, '');
 
+export const SIGN_OUT_URL = import.meta.env.VITE_SIGN_OUT_URL || '/api/auth/signout';
+
 export const readSession = () => {
   try {
     const user = JSON.parse(localStorage.getItem('madirenlearn-user') || 'null');

@@ -9,9 +9,9 @@ if (!process.env.JWT_SECRET) {
 const signToken = (user) => {
   try {
     return jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { userId: user.id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: '1d' },
+      { expiresIn: '7d' },
     );
   } catch (signError) {
     console.error('[madirenlearn auth] JWT sign failed:', signError.message);
@@ -37,16 +37,14 @@ const register = async (req, res) => {
       [name, email, hashedPassword, role]
     );
     const user = result.rows[0];
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' },
-    );
+    const token = signToken(user);
     if (!token || !user.id || !user.email) {
       console.error('[madirenlearn auth] register produced invalid session:', { user, token: Boolean(token) });
       return res.status(500).json({ error: 'Account created but the sign-in session could not be issued. Please try logging in.' });
     }
-    res.status(201).json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+    // Exclude password hash from the returned user object
+    const { password_hash, ...userWithoutPassword } = user;
+    res.status(201).json({ token, user: userWithoutPassword });
   } catch (error) {
     console.error('Register detailed error:', error);
     const isDuplicateEmail =
@@ -104,4 +102,8 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getMe, getUsers };
+const signout = (req, res) => {
+  res.json({ success: true, message: 'Signed out successfully' });
+};
+
+module.exports = { register, login, getMe, getUsers, signout };
