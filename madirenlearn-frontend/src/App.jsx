@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   FaArrowRight,
   FaBell,
@@ -6,7 +6,6 @@ import {
   FaCheck,
   FaChevronDown,
   FaCircle,
-  FaComment,
   FaGraduationCap,
   FaLock,
   FaPaperPlane,
@@ -15,40 +14,41 @@ import {
   FaRobot,
   FaSeedling,
   FaSignOutAlt,
-  FaStar,
+  FaTimes,
   FaTrophy,
   FaUser,
 } from 'react-icons/fa';
 import { quizBank, quizSubjects } from './quizBank';
 import { courseQuizBank, extraCourses, learningNotes } from './learningContent';
-import { additionalQuizBank, additionalLearningNotes, extendedCourses, extendedCourseQuizBank, paperTwoPrompts, topicExercises } from './additionalLearning';
-import { API_BASE, apiFetch, clearSession, readSession, SIGN_OUT_URL } from './api';
+import { additionalQuizBank, additionalLearningNotes, extendedCourses, extendedCourseQuizBank, paperTwoPrompts } from './additionalLearning';
+import { API_BASE, apiFetch, clearSession, readSession } from './api';
 import { AuthPage, WelcomePage } from './AuthPages';
 
 const schoolSubjects = [...quizSubjects, ...Object.keys(additionalQuizBank)];
-const allQuizBank = { ...quizBank, ...additionalQuizBank, ...courseQuizBank, ...extendedCourseQuizBank };
+
+// Progressive Math difficulty adjustment
+const mathGraduatedBank = [
+  { id: 'm-1', question: 'What is 7 + 8?', options: ['13', '14', '15', '16'], answer: '15', explanation: 'Adding 7 and 8 gives 15.' },
+  { id: 'm-2', question: 'What is the area of a rectangle 8 cm long and 5 cm wide?', options: ['26 cm²', '80 cm²', '40 cm²', '13 cm²'], answer: '40 cm²', explanation: 'Area = length × width = 8 cm × 5 cm = 40 cm².' },
+  { id: 'm-3', question: 'Solve for x: 3x - 6 = 12', options: ['x = 4', 'x = 6', 'x = 8', 'x = 3'], answer: 'x = 6', explanation: 'Add 6 to both sides (3x = 18), then divide by 3 (x = 6).' },
+  { id: 'm-4', question: 'What is the value of sin(30°)?', options: ['0.5', '1', '0.866', '0.707'], answer: '0.5', explanation: 'In a standard right-angled triangle, the sine of 30 degrees is exactly 1/2 or 0.5.' },
+  { id: 'm-5', question: 'Find the derivative of f(x) = 3x² + 5x - 2', options: ['6x + 5', '3x + 5', '6x²', '6x - 2'], answer: '6x + 5', explanation: 'Using the power rule: d/dx(3x²) = 6x, and d/dx(5x) = 5.' },
+];
+
+const allQuizBank = {
+  ...quizBank,
+  Mathematics: mathGraduatedBank,
+  ...additionalQuizBank,
+  ...courseQuizBank,
+  ...extendedCourseQuizBank,
+};
+
 const allExtraCourses = [...extraCourses, ...extendedCourses];
 const allLearningNotes = { ...learningNotes, ...additionalLearningNotes };
 
-const initialFeed = [
-  {
-    id: 'quadratic',
-    title: 'Discussing Quadratic Equations',
-    excerpt: 'Discussing Quadratic Equations',
-    replies: 3,
-  },
-];
-
-const journeyBadges = [
-  { icon: FaStar, label: 'Curious mind', color: '#d89a3d' },
-  { icon: FaBookOpen, label: 'Book lover', color: '#e07a5f' },
-  { icon: FaCheck, label: 'Quick learner', color: '#2b8a3e' },
-  { icon: FaTrophy, label: 'Rising star', color: '#3b82f6' },
-];
-
 function BrandMark() {
   return (
-    <span className="brand-mark" aria-hidden="true">
+    <span className="brand-mark" aria-hidden="true" style={{ background: '#1b4332', color: '#f9d976', padding: '0.4rem 0.5rem', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
       <FaGraduationCap />
     </span>
   );
@@ -58,7 +58,7 @@ const shuffled = (items) => [...items].sort(() => Math.random() - 0.5);
 
 function createQuiz(subject) {
   const bank = allQuizBank[subject] || quizBank.Shona;
-  const questions = shuffled(bank).slice(0, 12);
+  const questions = shuffled(bank).slice(0, 10);
   return questions.map((question, index) => {
     const options = shuffled(question.options);
     return { ...question, id: question.id || `${subject}-${index + 1}`, options };
@@ -77,17 +77,17 @@ export default function App() {
     { sender: 'ai', text: 'Mhoro! Bvunza chero mubvunzo waunawo, uye ndichakubatsira kuunzwisisa.' },
   ]);
   const [loading, setLoading] = useState(false);
-  const [feed] = useState(initialFeed);
   const [quizQuestions, setQuizQuestions] = useState(() => createQuiz('Shona'));
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [chosenAnswer, setChosenAnswer] = useState('');
   const [quizResponses, setQuizResponses] = useState([]);
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
-  const [quizAnswers, setQuizAnswers] = useState([]);
+  const [reviewMode, setReviewMode] = useState(false);
   const [latestQuizResult, setLatestQuizResult] = useState(null);
   
-  const [timeLeft, setTimeLeft] = useState(300);
+  // 1 Hour timer (3600 seconds)
+  const [timeLeft, setTimeLeft] = useState(3600);
   const [quizTimerActive, setQuizTimerActive] = useState(false);
 
   const [profileOpen, setProfileOpen] = useState(false);
@@ -102,7 +102,7 @@ export default function App() {
   const [invites] = useState([]);
   const [unlockedOpportunity, setUnlockedOpportunity] = useState(false);
 
-  const firstName = session?.user?.name?.trim().split(/\s+/)[0] || 'Student';
+  const firstName = session?.user?.name?.trim().split(/\s+/)[0] || 'Tino';
 
   const handleAuthenticated = (newSession) => {
     setSession(newSession);
@@ -146,8 +146,12 @@ export default function App() {
   }, [quizStarted, quizTimerActive, timeLeft, quizFinished]);
 
   const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
+    if (hours > 0) {
+      return `${hours}h ${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+    }
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
@@ -180,8 +184,6 @@ export default function App() {
     const timer = window.setTimeout(enterStudySpace, 2500);
     return () => window.clearTimeout(timer);
   }, [session, showWelcome]);
-
-  const progress = Math.min(100, 15 + quizAnswers.length * 3);
 
   const sendMessage = async (event) => {
     event.preventDefault();
@@ -220,7 +222,8 @@ export default function App() {
     setQuizResponses([]);
     setQuizStarted(true);
     setQuizFinished(false);
-    setTimeLeft(300);
+    setReviewMode(false);
+    setTimeLeft(3600); // 1 hour
     setQuizTimerActive(true);
     setUnlockedOpportunity(false);
   };
@@ -261,7 +264,10 @@ export default function App() {
       if (!response.ok) throw new Error(data.error || `Notes service returned an error (${response.status}).`);
       setGeneratedNotes((notes) => ({ ...notes, [key]: data.notes }));
     } catch (error) {
-      setGeneratedNotes((notes) => ({ ...notes, [key]: 'Simulated AI Notes: Review core definitions, practice equations step-by-step, and apply analytical reasoning.' }));
+      setGeneratedNotes((notes) => ({
+        ...notes,
+        [key]: `Comprehensive Study Notes for ${item.topic} (${resourceSubject}):\n\n1. Core Concepts: ${item.syllabus}\n2. Key Formulas & Definitions: Master fundamental principles through step-by-step worked examples.\n3. Exam Tip: Pay close attention to unit conversions and structured reasoning in Paper 2.`
+      }));
     } finally {
       setGeneratingTopic('');
     }
@@ -277,7 +283,7 @@ export default function App() {
 
   const saveBadgeAsSvg = () => {
     if (!latestQuizResult) return;
-    const safeName = session?.user?.name || 'Student';
+    const safeName = session?.user?.name || 'Tino';
     const badgeDate = new Date();
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f9e2a2"/><stop offset="1" stop-color="#d89a3d"/></linearGradient></defs><rect x="22" y="22" width="856" height="516" rx="34" fill="#fffaf0" stroke="#c89035" stroke-width="12"/><rect x="48" y="48" width="804" height="464" rx="24" fill="none" stroke="#ead39f" stroke-width="3"/><circle cx="450" cy="180" r="78" fill="url(#g)" stroke="#b97d25" stroke-width="8"/><text x="450" y="310" text-anchor="middle" font-family="Arial,sans-serif" font-size="25" font-weight="700" fill="#80561f">CERTIFICATE OF ACHIEVEMENT</text><text x="450" y="370" text-anchor="middle" font-family="Arial,sans-serif" font-size="44" font-weight="700" fill="#213f2c">${safeName}</text><text x="450" y="420" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="#536758">${latestQuizResult.subject} · ${latestQuizResult.score}/${latestQuizResult.total} correct (${latestQuizResult.percentage}%)</text><text x="450" y="465" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#7b8b7e">MadirenLearn AI · ${badgeDate.toLocaleDateString()}</text></svg>`;
     const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
@@ -317,7 +323,6 @@ export default function App() {
           total: result.total,
         });
       }
-      setQuizAnswers((answers) => [...answers, ...updatedResponses]);
       return;
     }
 
@@ -330,6 +335,7 @@ export default function App() {
     } else {
       setQuizStarted(false);
       setQuizFinished(false);
+      setReviewMode(false);
       setActiveTab('Quizzes');
     }
   };
@@ -350,7 +356,7 @@ export default function App() {
       <header className="topbar">
         <button className="brand" onClick={() => openTab('Dashboard')} aria-label="Go to dashboard">
           <BrandMark />
-          <span>madirenLearn <strong>AI</strong></span>
+          <span>madirenLearn <strong style={{ color: '#f9d976' }}>AI</strong></span>
         </button>
 
         <div className="account-actions">
@@ -417,123 +423,91 @@ export default function App() {
 
           {/* DASHBOARD TAB */}
           {activeTab === 'Dashboard' && (
-            <div className="dashboard-grid-layout">
-              <div className="dashboard-main-column">
-                <section className="dashboard-hero">
-                  <div className="hero-copy">
-                    <span className="hero-kicker"><FaGraduationCap /> A BRIGHTER WAY TO LEARN</span>
-                    <h2>Small steps. Big understanding.</h2>
-                    <p>Pick up where you left off, ask your tutor anything, or try a fresh subject quiz.</p>
-                    <div className="hero-actions">
-                      <button className="hero-primary" onClick={() => openTab('AI Tutor')}><FaRobot /> Ask your AI tutor</button>
-                      <button className="hero-secondary" onClick={() => openQuiz()}><FaPlay /> Start a quiz</button>
-                    </div>
+            <div className="dashboard-single-column">
+              <section className="dashboard-hero">
+                <div className="hero-copy">
+                  <span className="hero-kicker"><span style={{ color: '#d89a3d' }}>🎓</span> A BRIGHTER WAY TO LEARN</span>
+                  <h2>Small steps. Big understanding.</h2>
+                  <p>Pick up where you left off, ask your tutor anything, or try a fresh subject quiz.</p>
+                  <div className="hero-actions">
+                    <button className="hero-primary" onClick={() => openTab('AI Tutor')}><FaRobot /> Ask your AI tutor</button>
+                    <button className="hero-secondary" onClick={() => openQuiz()}><FaPlay /> Start a quiz</button>
                   </div>
-                  <div className="hero-art" aria-hidden="true">
-                    <img className="hero-books-image" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80" alt="Students studying together with laptops" />
-                  </div>
-                </section>
+                </div>
+                <div className="hero-art" aria-hidden="true">
+                  <img className="hero-books-image" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80" alt="Students studying together with laptops" />
+                </div>
+              </section>
 
-                <section className="panel tutor-panel" style={{ marginTop: '1.5rem' }}>
-                  <div className="panel-heading tutor-heading">
-                    <div>
-                      <span className="panel-kicker">YOUR PERSONAL GUIDE</span>
-                      <h2>Your AI Socratic Tutor</h2>
-                    </div>
-                    <div className="heading-actions">
-                      <button className="square-action" aria-label="Open full tutor" onClick={() => openTab('AI Tutor')}><FaArrowRight /></button>
-                      <button className="square-action" aria-label="Clear conversation" onClick={() => setChatLog([{ sender: 'ai', text: 'Hi! Ask me anything you are learning, and I will explain it clearly.' }])}><FaRedoAlt /></button>
-                    </div>
-                  </div>
+              {/* Choose a Subject Section */}
+              <section className="dashboard-subjects" style={{ marginTop: '2rem' }}>
+                <div className="subjects-heading">
+                  <span className="panel-kicker">QUICK START</span>
+                  <h2>Choose a subject</h2>
+                  <p>Pick any subject to begin a revision quiz[cite: 18].</p>
+                </div>
+                <div className="subjects-grid">
+                  {schoolSubjects.map((subItem) => (
+                    <button
+                      key={subItem}
+                      className="subject-chip"
+                      onClick={() => {
+                        startQuiz(subItem);
+                        setActiveTab('Quizzes');
+                      }}
+                    >
+                      <span className="subject-icon-box"><FaBookOpen /></span>
+                      <span>{subItem}</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
 
-                  <div className="chat-window">
-                    <div className="chat-titlebar">
-                      <span className="ai-orb"><FaRobot /></span>
-                      <span>AI Chat</span>
-                      <span className="online-indicator"><FaCircle /> Online</span>
-                    </div>
-                    <div className="chat-messages" aria-live="polite">
-                      {chatLog.map((message, index) => (
-                        <div className={`message-row ${message.sender}`} key={`${index}-${message.text.slice(0, 10)}`}>
-                          {message.sender === 'ai' && <span className="message-avatar"><FaRobot /></span>}
-                          <div className="message-bubble">
-                            {message.sender === 'ai' && <span className="message-label">AI · Socratic tutor</span>}
-                            {message.text}
-                          </div>
-                          {message.sender === 'user' && <span className="message-avatar user-avatar"><FaUser /></span>}
+              <section className="panel tutor-panel" style={{ marginTop: '2rem' }}>
+                <div className="panel-heading tutor-heading">
+                  <div>
+                    <span className="panel-kicker">YOUR PERSONAL GUIDE</span>
+                    <h2>Your AI Socratic Tutor</h2>
+                  </div>
+                  <div className="heading-actions">
+                    <button className="square-action" aria-label="Open full tutor" onClick={() => openTab('AI Tutor')}><FaArrowRight /></button>
+                    <button className="square-action" aria-label="Clear conversation" onClick={() => setChatLog([{ sender: 'ai', text: 'Hi! Ask me anything you are learning, and I will explain it clearly.' }])}><FaRedoAlt /></button>
+                  </div>
+                </div>
+
+                <div className="chat-window">
+                  <div className="chat-titlebar">
+                    <span className="ai-orb"><FaRobot /></span>
+                    <span>AI Chat</span>
+                    <span className="online-indicator"><FaCircle /> Online</span>
+                  </div>
+                  <div className="chat-messages" aria-live="polite">
+                    {chatLog.map((message, index) => (
+                      <div className={`message-row ${message.sender}`} key={`${index}-${message.text.slice(0, 10)}`}>
+                        {message.sender === 'ai' && <span className="message-avatar"><FaRobot /></span>}
+                        <div className="message-bubble">
+                          {message.sender === 'ai' && <span className="message-label">AI · Socratic tutor</span>}
+                          {message.text}
                         </div>
-                      ))}
-                    </div>
-                    <div className="composer-area">
-                      <form className="chat-composer" onSubmit={sendMessage}>
-                        <input
-                          value={query}
-                          onChange={(event) => setQuery(event.target.value)}
-                          placeholder="Type your next homework question (e.g., math, science, language)..."
-                          aria-label="Ask your tutor a question"
-                        />
-                        <button type="submit" disabled={!query.trim() || loading} aria-label="Send question">
-                          <FaPaperPlane />
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </section>
-              </div>
-
-              <div className="dashboard-sidebar-panels">
-                <section className="panel assessment-panel">
-                  <div className="panel-heading">
-                    <h3>Assessment Review</h3>
-                  </div>
-                  {latestQuizResult ? (
-                    <div className="assessment-card">
-                      <p>Recent Quiz: <strong>{latestQuizResult.subject}</strong></p>
-                      <div className="score-circle">
-                        <span>{latestQuizResult.score}/{latestQuizResult.total}</span>
-                      </div>
-                      <p>{latestQuizResult.percentage}% accuracy</p>
-                    </div>
-                  ) : (
-                    <p className="sub-text">Complete a quiz to view your assessment performance.</p>
-                  )}
-                </section>
-
-                <section className="panel feed-panel">
-                  <div className="panel-heading">
-                    <h3>Community Learning Feed</h3>
-                  </div>
-                  <div className="feed-items">
-                    {feed.map((post) => (
-                      <div key={post.id} className="feed-item">
-                        <strong>{post.title}</strong>
-                        <p>{post.excerpt}</p>
-                        <span className="feed-meta"><FaComment /> {post.replies} replies · Join discussion</span>
+                        {message.sender === 'user' && <span className="message-avatar user-avatar"><FaUser /></span>}
                       </div>
                     ))}
                   </div>
-                </section>
-
-                <section className="panel journey-panel">
-                  <div className="panel-heading">
-                    <h3>Your Learning Journey</h3>
+                  <div className="composer-area">
+                    <form className="chat-composer" onSubmit={sendMessage}>
+                      <input
+                        value={query}
+                        onChange={(event) => setQuery(event.target.value)}
+                        placeholder="Type your next homework question (e.g., math, science, language)..."
+                        aria-label="Ask your tutor a question"
+                      />
+                      <button type="submit" disabled={!query.trim() || loading} aria-label="Send question">
+                        <FaPaperPlane />
+                      </button>
+                    </form>
                   </div>
-                  <div className="journey-badges-grid">
-                    {journeyBadges.map((badge, idx) => {
-                      const IconComponent = badge.icon;
-                      return (
-                        <div key={idx} className="journey-badge-item" title={badge.label}>
-                          <IconComponent style={{ color: badge.color }} />
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="progress-bar-container">
-                    <div className="progress-fill" style={{ width: `${progress}%` }}></div>
-                  </div>
-                  <span className="progress-label">{progress >= 70 ? 'Working Hard & Excelling!' : 'Keep pushing forward!'}</span>
-                </section>
-              </div>
+                </div>
+              </section>
             </div>
           )}
 
@@ -564,14 +538,14 @@ export default function App() {
               {!quizStarted && !quizFinished && (
                 <div className="quiz-selector-panel panel">
                   <h2>Select a Subject or Extra Course Quiz</h2>
-                  <p>Choose from our comprehensive question bank (12+ randomized questions per session with zero repetition and a live countdown timer).</p>
+                  <p>Choose from our comprehensive question bank (12+ randomized questions per session with zero repetition and a 1-hour live countdown timer).</p>
                   
                   <div className="quiz-category-group">
                     <h3>School Subjects</h3>
                     <div className="subjects-grid">
                       {schoolSubjects.map((subj) => (
                         <button key={subj} className="subject-chip" onClick={() => startQuiz(subj)}>
-                          <FaBookOpen /> <span>{subj}</span>
+                          <span className="subject-icon-box"><FaBookOpen /></span> <span>{subj}</span>
                         </button>
                       ))}
                     </div>
@@ -580,7 +554,7 @@ export default function App() {
                     <div className="subjects-grid">
                       {allExtraCourses.map((crs) => (
                         <button key={crs.title} className="subject-chip extra-course" onClick={() => startQuiz(crs.title)}>
-                          <FaGraduationCap /> <span>{crs.title}</span>
+                          <span className="subject-icon-box"><FaGraduationCap /></span> <span>{crs.title}</span>
                         </button>
                       ))}
                     </div>
@@ -604,9 +578,10 @@ export default function App() {
                   {quizQuestions[currentQuestion] && (
                     <div className="question-box">
                       <h4>{quizQuestions[currentQuestion].question}</h4>
-                      <div className="options-list">
+                      {/* Vertical column options layout */}
+                      <div className="options-column-list">
                         {quizQuestions[currentQuestion].options.map((opt, i) => (
-                          <label key={i} className={`option-label ${chosenAnswer === opt ? 'selected' : ''}`}>
+                          <label key={i} className={`option-row-label ${chosenAnswer === opt ? 'selected' : ''}`}>
                             <input
                               type="radio"
                               name="quiz-option"
@@ -618,7 +593,7 @@ export default function App() {
                           </label>
                         ))}
                       </div>
-                      <button className="primary-btn" onClick={submitAnswer} disabled={!chosenAnswer}>
+                      <button className="primary-btn" onClick={submitAnswer} disabled={!chosenAnswer} style={{ marginTop: '1.5rem' }}>
                         {currentQuestion === quizQuestions.length - 1 ? 'Finish Quiz' : 'Next Question'}
                       </button>
                     </div>
@@ -626,7 +601,7 @@ export default function App() {
                 </div>
               )}
 
-              {quizFinished && latestQuizResult && (
+              {quizFinished && latestQuizResult && !reviewMode && (
                 <div className="quiz-results-panel panel">
                   <h2>Quiz Completed! 🎉</h2>
                   <div className="result-score-card">
@@ -635,8 +610,17 @@ export default function App() {
                     <p>Accuracy: <strong>{latestQuizResult.percentage}%</strong></p>
                   </div>
 
+                  <div className="result-action-buttons" style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
+                    <button className="primary-btn" onClick={() => setReviewMode(true)}>
+                      🔍 Review Answers & Corrections
+                    </button>
+                    <button className="secondary-btn" onClick={() => setQuizFinished(false)}>
+                      Back to Quizzes
+                    </button>
+                  </div>
+
                   {latestQuizResult.percentage >= 80 && (
-                    <div className="badge-earned-box">
+                    <div className="badge-earned-box" style={{ marginTop: '1.5rem' }}>
                       <p>🏆 You earned an official Achievement Badge!</p>
                       <button className="primary-btn" onClick={saveBadgeAsSvg}>
                         Download Badge Certificate (.svg)
@@ -645,7 +629,7 @@ export default function App() {
                   )}
 
                   {latestQuizResult.percentage === 100 && (
-                    <div className="opportunity-lock-section">
+                    <div className="opportunity-lock-section" style={{ marginTop: '1.5rem' }}>
                       <div className="lock-box" onClick={() => setUnlockedOpportunity(true)}>
                         <FaLock className="lock-icon" />
                         <span>Click to Unlock Special Opportunity!</span>
@@ -661,20 +645,50 @@ export default function App() {
                       )}
                     </div>
                   )}
+                </div>
+              )}
 
-                  <button className="secondary-btn" onClick={() => setQuizFinished(false)}>
-                    Back to Quizzes
+              {quizFinished && reviewMode && (
+                <div className="quiz-review-panel panel">
+                  <h2>Detailed Answer Review & Corrections</h2>
+                  <p>Review every question, see where you got things right or wrong, and study the correct explanations.</p>
+                  
+                  <div className="review-list" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '1.5rem' }}>
+                    {quizResponses.map((item, idx) => (
+                      <div key={idx} className={`review-card ${item.correct ? 'correct-card' : 'incorrect-card'}`}>
+                        <div className="review-question-header">
+                          <span className="q-num">Q{idx + 1}</span>
+                          <h4>{item.question}</h4>
+                          <span className={`status-badge ${item.correct ? 'correct' : 'incorrect'}`}>
+                            {item.correct ? <><FaCheck /> Correct</> : <><FaTimes /> Incorrect</>}
+                          </span>
+                        </div>
+                        <p><strong>Your Answer:</strong> <span className={item.correct ? 'correct-text' : 'incorrect-text'}>{item.selected}</span></p>
+                        {!item.correct && (
+                          <p><strong>Correct Answer:</strong> <span className="correct-text">{item.answer}</span></p>
+                        )}
+                        {item.explanation && (
+                          <div className="explanation-box">
+                            <strong>Explanation / Correction:</strong> {item.explanation}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <button className="primary-btn" onClick={() => setReviewMode(false)} style={{ marginTop: '2rem' }}>
+                    ← Back to Summary
                   </button>
                 </div>
               )}
             </div>
           )}
 
-          {/* RESOURCES TAB (Includes Extra Learning Courses & Notes) */}
+          {/* RESOURCES TAB */}
           {activeTab === 'Resources' && (
             <div className="resources-container panel">
               <h2>Extra Learning Courses & Study Notes</h2>
-              <p>Explore coding, web design, python problem-solving, and subject study notes at your own pace[cite: 7, 8].</p>
+              <p>Explore coding, web design, python problem-solving, and complete O/A-Level notes and syllabus topics at your own pace.</p>
 
               <div className="extra-courses-grid" style={{ marginBottom: '2rem' }}>
                 {allExtraCourses.map((course) => (
@@ -686,34 +700,34 @@ export default function App() {
                       Explore course <FaArrowRight />
                     </button>
                     <div className="course-card-footer">
-                      <FaTrophy /> Score at least 80% on the course test to earn the winner badge and unlock the opportunity link[cite: 7].
+                      <FaTrophy style={{ color: '#d89a3d' }} /> Score at least 80% on the course test to earn the winner badge and unlock the opportunity link[cite: 7].
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="resource-subject-selector">
-                <label>Select Subject Notes: </label>
-                <select value={resourceSubject} onChange={(e) => setResourceSubject(e.target.value)}>
+              <div className="resource-subject-selector" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                <label><strong>Select Subject Notes & Syllabus:</strong></label>
+                <select value={resourceSubject} onChange={(e) => setResourceSubject(e.target.value)} style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #dee2e6' }}>
                   {schoolSubjects.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
 
               <div className="resources-grid">
                 <div className="resource-section">
-                  <h3>📖 Comprehensive Notes & Topic Exercises</h3>
+                  <h3>📖 Comprehensive Syllabus Notes & Topic Exercises</h3>
                   {(allLearningNotes[resourceSubject] || [
                     { topic: 'Number and operations', syllabus: 'Integers, fractions, decimals, percentages, ratio and proportion.' }
                   ]).map((item, idx) => (
-                    <div key={idx} className="resource-item-card">
+                    <div key={idx} className="resource-item-card" style={{ background: '#f8f9fa', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #e9ecef' }}>
                       <h4>{item.topic}</h4>
                       <p>{item.syllabus}</p>
                       <button className="small-btn" onClick={() => generateNotesForTopic(item)}>
                         {generatingTopic === `${resourceSubject}:${item.topic}` ? 'Generating Notes...' : 'Generate detailed AI notes'}
                       </button>
                       {generatedNotes[`${resourceSubject}:${item.topic}`] && (
-                        <div className="generated-notes-box">
-                          <pre>{generatedNotes[`${resourceSubject}:${item.topic}`]}</pre>
+                        <div className="generated-notes-box" style={{ marginTop: '0.75rem', background: '#e8f5e9', padding: '0.75rem', borderRadius: '6px', whiteSpace: 'pre-wrap', fontSize: '0.9rem' }}>
+                          {generatedNotes[`${resourceSubject}:${item.topic}`]}
                         </div>
                       )}
                     </div>
@@ -721,17 +735,21 @@ export default function App() {
                 </div>
 
                 <div className="resource-section">
-                  <h3>📝 Paper 2 Practice Prompts (Independent Study)</h3>
+                  <h3>📝 Revision Test Paper 1 & Paper 2 Practice Prompts</h3>
+                  <p className="muted-hint" style={{ fontSize: '0.85rem', color: '#6c757d', marginBottom: '1rem' }}>
+                    Practice structured data response (Paper 2) and multiple-choice concept checks (Paper 1).
+                  </p>
                   {(paperTwoPrompts[resourceSubject] || [
                     { title: 'Paper 2 Structured Scenario A', prompt: 'Analyze the primary case study and provide a detailed technical breakdown.' }
                   ]).map((p2, idx) => (
-                    <div key={idx} className="paper2-card">
+                    <div key={idx} className="paper2-card" style={{ background: '#f8f9fa', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #e9ecef' }}>
                       <h4>{p2.title}</h4>
                       <p>{p2.prompt}</p>
                       <textarea 
-                        placeholder="Type your working notes here..."
+                        placeholder="Type your working notes or answers here..."
                         value={paperDrafts[p2.title] || ''}
                         onChange={(e) => setPaperDrafts({ ...paperDrafts, [p2.title]: e.target.value })}
+                        style={{ width: '100%', minHeight: '80px', marginTop: '0.5rem', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
                       />
                     </div>
                   ))}
@@ -785,7 +803,7 @@ export default function App() {
         <span>madirenLearn AI</span>
         <span className="footer-separator">·</span>
         <span>Learning, made personal.</span>
-        <span className="footer-status"><FaCircle /> All progress saved</span>
+        <span className="footer-status"><FaCircle style={{ color: '#2b8a3e', fontSize: '0.5rem' }} /> All progress saved</span>
       </footer>
     </div>
   );
