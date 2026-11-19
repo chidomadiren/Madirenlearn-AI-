@@ -4,29 +4,40 @@ import {
   FaBell,
   FaBookOpen,
   FaCheck,
+  FaCheckCircle,
   FaChevronDown,
   FaCircle,
+  FaClock,
   FaGraduationCap,
   FaLock,
   FaPaperPlane,
   FaPlay,
   FaRedoAlt,
+  FaRegClock,
   FaRobot,
   FaSeedling,
   FaSignOutAlt,
+  FaStar,
   FaTimes,
   FaTrophy,
   FaUser,
+  FaUserGraduate,
+  FaUsers,
 } from 'react-icons/fa';
 import { quizBank, quizSubjects } from './quizBank';
 import { courseQuizBank, extraCourses, learningNotes } from './learningContent';
-import { additionalQuizBank, additionalLearningNotes, extendedCourses, extendedCourseQuizBank, paperTwoPrompts } from './additionalLearning';
+import {
+  additionalQuizBank,
+  additionalLearningNotes,
+  extendedCourses,
+  extendedCourseQuizBank,
+  paperTwoPrompts,
+} from './additionalLearning';
 import { API_BASE, apiFetch, clearSession, readSession } from './api';
 import { AuthPage, WelcomePage } from './AuthPages';
 
 const schoolSubjects = [...quizSubjects, ...Object.keys(additionalQuizBank)];
 
-// Progressive Math difficulty adjustment
 const mathGraduatedBank = [
   { id: 'm-1', question: 'What is 7 + 8?', options: ['13', '14', '15', '16'], answer: '15', explanation: 'Adding 7 and 8 gives 15.' },
   { id: 'm-2', question: 'What is the area of a rectangle 8 cm long and 5 cm wide?', options: ['26 cm²', '80 cm²', '40 cm²', '13 cm²'], answer: '40 cm²', explanation: 'Area = length × width = 8 cm × 5 cm = 40 cm².' },
@@ -48,9 +59,298 @@ const allLearningNotes = { ...learningNotes, ...additionalLearningNotes };
 
 function BrandMark() {
   return (
-    <span className="brand-mark" aria-hidden="true" style={{ background: '#1b4332', color: '#f9d976', padding: '0.4rem 0.5rem', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+    <span
+      className="brand-mark"
+      aria-hidden="true"
+      style={{
+        background: '#1b4332',
+        color: '#f9d976',
+        padding: '0.4rem 0.5rem',
+        borderRadius: '8px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <FaGraduationCap />
     </span>
+  );
+}
+
+export function LandingPage({ onGetStarted, onLogin }) {
+  return (
+    <div className="landing-page-shell">
+      <header className="landing-navbar">
+        <div className="brand-logo">
+          <div className="auth-cap-box">
+            <FaGraduationCap />
+          </div>
+          <span className="auth-brand-name">
+            madirenLearn <strong>AI</strong>
+          </span>
+        </div>
+
+        <nav className="landing-nav-links" aria-label="Landing navigation">
+          <a href="#home" className="active">Home</a>
+          <a href="#courses">Courses</a>
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#about">About</a>
+        </nav>
+
+        <div className="landing-nav-actions">
+          <button type="button" className="landing-login-btn" onClick={onLogin}>
+            Log In
+          </button>
+          <button type="button" className="landing-signup-btn" onClick={onGetStarted}>
+            Sign Up
+          </button>
+        </div>
+      </header>
+
+      <section className="landing-hero" id="home">
+        <div className="landing-hero-content">
+          <span className="landing-kicker">THE FUTURE OF ONLINE EDUCATION</span>
+          <h1 className="landing-title">
+            Learn Skills.
+            <br />
+            Advance Your
+            <br />
+            <span className="highlight-future">Future.</span>
+          </h1>
+          <p className="landing-subtitle">
+            Access high-quality study resources, revision quizzes, and guided AI tutoring at your own pace. Anytime, anywhere.
+          </p>
+
+          <div className="landing-hero-btns">
+            <button type="button" className="hero-primary" onClick={onGetStarted}>
+              <span>Explore Courses</span>
+              <FaArrowRight />
+            </button>
+            <button type="button" className="hero-secondary" onClick={onLogin}>
+              <div className="play-icon-wrap">▶</div>
+              <span>Sign In</span>
+            </button>
+          </div>
+
+          <div className="landing-social-proof">
+            <div className="proof-avatars" aria-hidden="true">
+              <span className="avatar-dot" style={{ background: '#2d6a4f' }}>👤</span>
+              <span className="avatar-dot" style={{ background: '#52b788' }}>👩</span>
+              <span className="avatar-dot" style={{ background: '#74c69d' }}>👨</span>
+              <span className="avatar-dot" style={{ background: '#d89a3d' }}>🎓</span>
+            </div>
+            <span>
+              <strong>5K+</strong> Students are already learning and growing with madirenLearn AI.
+            </span>
+          </div>
+        </div>
+
+        <div className="landing-hero-card-preview">
+          <div className="preview-top-card">
+            <span className="preview-label">Your Progress</span>
+            <div className="preview-progress-track">
+              <div className="preview-progress-fill" style={{ width: '78%' }} />
+            </div>
+            <span className="preview-subtext">Keep going! You&apos;re doing great.</span>
+          </div>
+
+          <div className="preview-lesson-card">
+            <div className="lesson-play-icon">
+              <FaGraduationCap />
+            </div>
+            <div className="lesson-info">
+              <strong>Syllabus &amp; Revision Hub</strong>
+              <span>Timed quizzes · AI Socratic Tutor</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="landing-features-bar" id="features">
+        <div className="feature-item">
+          <div className="feature-icon">
+            <FaGraduationCap />
+          </div>
+          <div>
+            <h4>Guided AI Tutor</h4>
+            <p>Ask questions step-by-step across subjects in English or Shona.</p>
+          </div>
+        </div>
+
+        <div className="feature-item">
+          <div className="feature-icon">
+            <FaClock />
+          </div>
+          <div>
+            <h4>Learn at Your Pace</h4>
+            <p>Practice anytime with focused 30-minute revision sessions.</p>
+          </div>
+        </div>
+
+        <div className="feature-item">
+          <div className="feature-icon">
+            <FaUsers />
+          </div>
+          <div>
+            <h4>Achievement Badges</h4>
+            <p>Earn certificates and track your progress as you master topics.</p>
+          </div>
+        </div>
+
+        <div className="feature-item">
+          <div className="feature-icon">
+            <FaUserGraduate />
+          </div>
+          <div>
+            <h4>Student-First Support</h4>
+            <p>Built to help high school learners revise clearly and confidently.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="landing-courses-section" id="courses">
+        <div className="section-header">
+          <h2>Popular Subjects &amp; Courses</h2>
+          <p>Explore core subjects and extra courses to start learning today.</p>
+        </div>
+
+        <div className="courses-grid-cards">
+          <div className="course-card-item">
+            <div className="course-card-img ui-ux-bg">
+              <span className="course-tag bestseller">Core Subject</span>
+              <span className="course-fav">♡</span>
+            </div>
+            <div className="course-card-body">
+              <h3>Mathematics</h3>
+              <p>Build strong problem-solving skills from algebra to trigonometry.</p>
+              <div className="course-author-row">
+                <span>madirenLearn AI</span>
+                <span className="course-rating">
+                  <FaStar style={{ color: '#f9d976' }} /> 4.9 (1.4K)
+                </span>
+              </div>
+              <div className="course-footer-row">
+                <span>
+                  <FaRegClock /> Practice Quizzes
+                </span>
+                <strong className="course-price">Free</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="course-card-item">
+            <div className="course-card-img code-bg">
+              <span className="course-tag hot">Popular</span>
+              <span className="course-fav">♡</span>
+            </div>
+            <div className="course-card-body">
+              <h3>Shona</h3>
+              <p>Strengthen comprehension, grammar, and structured exam responses.</p>
+              <div className="course-author-row">
+                <span>madirenLearn AI</span>
+                <span className="course-rating">
+                  <FaStar style={{ color: '#f9d976' }} /> 4.8 (1.1K)
+                </span>
+              </div>
+              <div className="course-footer-row">
+                <span>
+                  <FaRegClock /> Revision Notes
+                </span>
+                <strong className="course-price">Free</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="course-card-item">
+            <div className="course-card-img marketing-bg">
+              <span className="course-tag">Featured</span>
+              <span className="course-fav">♡</span>
+            </div>
+            <div className="course-card-body">
+              <h3>Combined Science</h3>
+              <p>Review key biology, chemistry, and physics principles for exams.</p>
+              <div className="course-author-row">
+                <span>madirenLearn AI</span>
+                <span className="course-rating">
+                  <FaStar style={{ color: '#f9d976' }} /> 4.7 (980)
+                </span>
+              </div>
+              <div className="course-footer-row">
+                <span>
+                  <FaRegClock /> Topic Guides
+                </span>
+                <strong className="course-price">Free</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="course-card-item">
+            <div className="course-card-img data-bg">
+              <span className="course-tag new">Extra</span>
+              <span className="course-fav">♡</span>
+            </div>
+            <div className="course-card-body">
+              <h3>Digital &amp; Study Skills</h3>
+              <p>Develop effective revision habits and practical tech foundations.</p>
+              <div className="course-author-row">
+                <span>madirenLearn AI</span>
+                <span className="course-rating">
+                  <FaStar style={{ color: '#f9d976' }} /> 4.9 (1.2K)
+                </span>
+              </div>
+              <div className="course-footer-row">
+                <span>
+                  <FaRegClock /> Guided Modules
+                </span>
+                <strong className="course-price">Free</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="view-all-wrapper">
+          <button type="button" className="view-all-btn" onClick={onGetStarted}>
+            <span>View All Subjects</span>
+            <FaArrowRight />
+          </button>
+        </div>
+      </section>
+
+      <section className="landing-cta-banner" id="pricing">
+        <div className="cta-banner-content">
+          <div className="cta-icon-box">
+            <FaGraduationCap />
+          </div>
+          <div>
+            <h2>Start Your Learning Journey Today</h2>
+            <p>Create your student account and jump into quizzes, notes, and AI tutoring.</p>
+          </div>
+        </div>
+
+        <div className="cta-banner-action">
+          <button type="button" className="cta-btn-primary" onClick={onGetStarted}>
+            <span>Get Started for Free</span>
+            <FaArrowRight />
+          </button>
+          <span className="cta-footnote">
+            <FaCheckCircle style={{ color: '#52b788' }} /> Free student access
+          </span>
+        </div>
+      </section>
+
+      <footer className="landing-footer" id="about">
+        <div className="brand-logo">
+          <div className="auth-cap-box" style={{ width: 32, height: 32, fontSize: '1rem' }}>
+            <FaGraduationCap />
+          </div>
+          <span className="auth-brand-name" style={{ color: '#fff' }}>
+            madirenLearn <strong>AI</strong>
+          </span>
+        </div>
+        <p>© 2026 madirenLearn AI. Learning, made personal.</p>
+      </footer>
+    </div>
   );
 }
 
@@ -67,6 +367,7 @@ function createQuiz(subject) {
 
 export default function App() {
   const [session, setSession] = useState(() => readSession());
+  const [view, setView] = useState(() => (readSession() ? 'dashboard' : 'landing'));
   const [authChecking, setAuthChecking] = useState(() => Boolean(readSession()));
   const [showWelcome, setShowWelcome] = useState(false);
   const [activeTab, setActiveTab] = useState('Dashboard');
@@ -85,9 +386,8 @@ export default function App() {
   const [quizFinished, setQuizFinished] = useState(false);
   const [reviewMode, setReviewMode] = useState(false);
   const [latestQuizResult, setLatestQuizResult] = useState(null);
-  
-  // 1 Hour timer (3600 seconds)
-  const [timeLeft, setTimeLeft] = useState(3600);
+
+  const [timeLeft, setTimeLeft] = useState(1800);
   const [quizTimerActive, setQuizTimerActive] = useState(false);
 
   const [profileOpen, setProfileOpen] = useState(false);
@@ -107,6 +407,7 @@ export default function App() {
   const handleAuthenticated = (newSession) => {
     setSession(newSession);
     setShowWelcome(true);
+    setView('welcome');
   };
 
   const logout = async () => {
@@ -119,13 +420,14 @@ export default function App() {
       setSession(null);
       setShowWelcome(false);
       setProfileOpen(false);
-      window.location.href = '/';
+      setView('landing');
     }
   };
 
   const enterStudySpace = () => {
     setShowWelcome(false);
     setActiveTab('Dashboard');
+    setView('dashboard');
   };
 
   useEffect(() => {
@@ -167,7 +469,7 @@ export default function App() {
         if (!response.ok) throw new Error(data.error || 'Could not verify your session.');
         if (active && data.user) {
           localStorage.setItem('madirenlearn-user', JSON.stringify(data.user));
-          setSession((current) => current ? { ...current, user: data.user } : current);
+          setSession((current) => (current ? { ...current, user: data.user } : current));
         }
       })
       .catch(() => {
@@ -176,8 +478,10 @@ export default function App() {
       .finally(() => {
         if (active) setAuthChecking(false);
       });
-    return () => { active = false; };
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [session?.token]);
 
   useEffect(() => {
     if (!session || !showWelcome) return undefined;
@@ -205,9 +509,10 @@ export default function App() {
       if (!data.tutorResponse) throw new Error('The tutor service returned an empty answer. Please try again.');
       setChatLog((messages) => [...messages, { sender: 'ai', text: data.tutorResponse }]);
     } catch (error) {
-      const message = error instanceof TypeError
-        ? 'Cannot reach the tutor backend. Start the backend server and check that it is listening on port 5000.'
-        : error.message;
+      const message =
+        error instanceof TypeError
+          ? 'Cannot reach the tutor backend. Start the backend server and check that it is listening on port 5000.'
+          : error.message;
       setChatLog((messages) => [...messages, { sender: 'ai', text: message }]);
     } finally {
       setLoading(false);
@@ -223,9 +528,18 @@ export default function App() {
     setQuizStarted(true);
     setQuizFinished(false);
     setReviewMode(false);
-    setTimeLeft(3600); // 1 hour
+    setTimeLeft(1800);
     setQuizTimerActive(true);
     setUnlockedOpportunity(false);
+  };
+
+  const exitQuiz = () => {
+    setQuizTimerActive(false);
+    setQuizStarted(false);
+    setQuizFinished(false);
+    setReviewMode(false);
+    setChosenAnswer('');
+    setCurrentQuestion(0);
   };
 
   const loadProfilePhoto = (event) => {
@@ -263,10 +577,10 @@ export default function App() {
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || `Notes service returned an error (${response.status}).`);
       setGeneratedNotes((notes) => ({ ...notes, [key]: data.notes }));
-    } catch (error) {
+    } catch {
       setGeneratedNotes((notes) => ({
         ...notes,
-        [key]: `Comprehensive Study Notes for ${item.topic} (${resourceSubject}):\n\n1. Core Concepts: ${item.syllabus}\n2. Key Formulas & Definitions: Master fundamental principles through step-by-step worked examples.\n3. Exam Tip: Pay close attention to unit conversions and structured reasoning in Paper 2.`
+        [key]: `Comprehensive Study Notes for ${item.topic} (${resourceSubject}):\n\n1. Core Concepts: ${item.syllabus}\n2. Key Formulas & Definitions: Master fundamental principles through step-by-step worked examples.\n3. Exam Tip: Pay close attention to unit conversions and structured reasoning in Paper 2.`,
       }));
     } finally {
       setGeneratingTopic('');
@@ -298,7 +612,10 @@ export default function App() {
     if (!chosenAnswer) return;
     const question = quizQuestions[currentQuestion];
     const correct = chosenAnswer === question.answer;
-    const updatedResponses = [...quizResponses, { ...question, selected: chosenAnswer, correct, score: correct ? '1/1' : '0/1' }];
+    const updatedResponses = [
+      ...quizResponses,
+      { ...question, selected: chosenAnswer, correct, score: correct ? '1/1' : '0/1' },
+    ];
     setChosenAnswer('');
     setQuizResponses(updatedResponses);
 
@@ -346,48 +663,104 @@ export default function App() {
     setNotificationsOpen(false);
   };
 
-  if (authChecking) return <main className="welcome-screen"><p className="welcome-redirect">Verifying your learning session…</p></main>;
-  if (!session) return <AuthPage onAuthenticated={handleAuthenticated} />;
-  if (showWelcome) return <WelcomePage name={firstName} onEnter={enterStudySpace} />;
+  if (authChecking) {
+    return (
+      <main className="welcome-screen">
+        <p className="welcome-redirect">Verifying your learning session…</p>
+      </main>
+    );
+  }
+
+  if (!session && view === 'landing') {
+    return (
+      <LandingPage
+        onGetStarted={() => setView('auth')}
+        onLogin={() => setView('auth')}
+      />
+    );
+  }
+
+  if (!session) {
+    return <AuthPage onAuthenticated={handleAuthenticated} />;
+  }
+
+  if (showWelcome || view === 'welcome') {
+    return <WelcomePage name={firstName} onEnter={enterStudySpace} />;
+  }
 
   return (
     <div className="app-shell-sidebar">
-      {/* Top Main Navbar */}
       <header className="topbar">
-        <button className="brand" onClick={() => openTab('Dashboard')} aria-label="Go to dashboard">
+        <button type="button" className="brand" onClick={() => openTab('Dashboard')} aria-label="Go to dashboard">
           <BrandMark />
-          <span>madirenLearn <strong style={{ color: '#f9d976' }}>AI</strong></span>
+          <span>
+            madirenLearn <strong style={{ color: '#f9d976' }}>AI</strong>
+          </span>
         </button>
 
         <div className="account-actions">
-          <button className="account-button" onClick={() => { setProfileOpen((open) => !open); setNotificationsOpen(false); }}>
+          <button
+            type="button"
+            className="account-button"
+            onClick={() => {
+              setProfileOpen((open) => !open);
+              setNotificationsOpen(false);
+            }}
+          >
             <span className="avatar">{profilePhoto ? <img src={profilePhoto} alt="" /> : <FaUser />}</span>
             <span className="account-name">{firstName}</span>
             <FaChevronDown className="account-chevron" />
           </button>
-          <button className="icon-button notification-button" aria-label="Notifications" onClick={() => { setNotificationsOpen((open) => !open); setProfileOpen(false); }}>
+
+          <button
+            type="button"
+            className="icon-button notification-button"
+            aria-label="Notifications"
+            onClick={() => {
+              setNotificationsOpen((open) => !open);
+              setProfileOpen(false);
+            }}
+          >
             <FaBell />
             <span className="notification-dot" />
           </button>
-          {notificationsOpen && <div className="notification-panel"><strong>You’re all caught up</strong><p>Finish a subject quiz to add your latest learning progress here.</p><button onClick={() => openQuiz()}>Choose a quiz <FaArrowRight /></button></div>}
+
+          {notificationsOpen && (
+            <div className="notification-panel">
+              <strong>You’re all caught up</strong>
+              <p>Finish a subject quiz to add your latest learning progress here.</p>
+              <button type="button" onClick={() => openQuiz()}>
+                Choose a quiz <FaArrowRight />
+              </button>
+            </div>
+          )}
+
           {profileOpen && (
             <div className="profile-popover">
               <strong>{session.user.name}</strong>
               <span>{session.user.email}</span>
-              <button onClick={() => openTab('Profile')}>View profile <FaArrowRight /></button>
-              <button className="logout-action" onClick={logout}>Log out</button>
+              <button type="button" onClick={() => openTab('Profile')}>
+                View profile <FaArrowRight />
+              </button>
+              <button type="button" className="logout-action" onClick={logout}>
+                Log out
+              </button>
             </div>
           )}
         </div>
       </header>
 
       <div className="main-layout-wrapper">
-        {/* Left Sidebar Navigation */}
         <aside className="left-sidebar" aria-label="Learning navigation">
           <div className="sidebar-section-title">Study space</div>
           <nav className="primary-nav">
             {['Dashboard', 'AI Tutor', 'Quizzes', 'Resources', 'Profile'].map((tab) => (
-              <button key={tab} className={`nav-link ${activeTab === tab ? 'active' : ''}`} onClick={() => openTab(tab)}>
+              <button
+                key={tab}
+                type="button"
+                className={`nav-link ${activeTab === tab ? 'active' : ''}`}
+                onClick={() => openTab(tab)}
+              >
                 {tab}
               </button>
             ))}
@@ -396,21 +769,44 @@ export default function App() {
           <div className="sidebar-section-title revision-tests-title">REVISION TESTS</div>
           <div className="sidebar-subject-list">
             {['Shona', 'Mathematics', 'English', 'Combined Science'].map((sub) => (
-              <button key={sub} className="sidebar-sub-item" onClick={() => { startQuiz(sub); setActiveTab('Quizzes'); }}>
+              <button
+                key={sub}
+                type="button"
+                className="sidebar-sub-item"
+                onClick={() => {
+                  startQuiz(sub);
+                  setActiveTab('Quizzes');
+                }}
+              >
                 {sub}
               </button>
             ))}
           </div>
 
           <div className="sidebar-footer">
-            <button className="sign-out-button" onClick={logout}>
+            <button type="button" className="sign-out-button" onClick={logout}>
               <FaSignOutAlt />
               <span>Sign out</span>
             </button>
           </div>
         </aside>
 
-        {invites.length > 0 && <aside className="incoming-invites" aria-label="Quiz invitations"><strong>Quiz challenge invites</strong>{invites.map((invite) => <article key={invite.id}><p><b>{invite.hostName}</b> invited you to play {invite.subject}.</p><div><button onClick={() => respondToInvite(invite, true)}>Accept</button><button onClick={() => respondToInvite(invite, false)}>Decline</button></div></article>)}</aside>}
+        {invites.length > 0 && (
+          <aside className="incoming-invites" aria-label="Quiz invitations">
+            <strong>Quiz challenge invites</strong>
+            {invites.map((invite) => (
+              <article key={invite.id}>
+                <p>
+                  <b>{invite.hostName}</b> invited you to play {invite.subject}.
+                </p>
+                <div>
+                  <button type="button" onClick={() => respondToInvite(invite, true)}>Accept</button>
+                  <button type="button" onClick={() => respondToInvite(invite, false)}>Decline</button>
+                </div>
+              </article>
+            ))}
+          </aside>
+        )}
 
         <main className="workspace">
           <div className="welcome-row">
@@ -418,45 +814,58 @@ export default function App() {
               <span className="eyebrow">YOUR LEARNING SPACE</span>
               <h1>Welcome Back, {firstName}!</h1>
             </div>
-            <span className="welcome-note"><FaSeedling /> Your learning journey is growing</span>
+            <span className="welcome-note">
+              <FaSeedling /> Your learning journey is growing
+            </span>
           </div>
 
-          {/* DASHBOARD TAB */}
           {activeTab === 'Dashboard' && (
             <div className="dashboard-single-column">
               <section className="dashboard-hero">
                 <div className="hero-copy">
-                  <span className="hero-kicker"><span style={{ color: '#d89a3d' }}>🎓</span> A BRIGHTER WAY TO LEARN</span>
+                  <span className="hero-kicker">
+                    <span style={{ color: '#d89a3d' }}>🎓</span> A BRIGHTER WAY TO LEARN
+                  </span>
                   <h2>Small steps. Big understanding.</h2>
                   <p>Pick up where you left off, ask your tutor anything, or try a fresh subject quiz.</p>
                   <div className="hero-actions">
-                    <button className="hero-primary" onClick={() => openTab('AI Tutor')}><FaRobot /> Ask your AI tutor</button>
-                    <button className="hero-secondary" onClick={() => openQuiz()}><FaPlay /> Start a quiz</button>
+                    <button type="button" className="hero-primary" onClick={() => openTab('AI Tutor')}>
+                      <FaRobot /> Ask your AI tutor
+                    </button>
+                    <button type="button" className="hero-secondary" onClick={() => openQuiz()}>
+                      <FaPlay /> Start a quiz
+                    </button>
                   </div>
                 </div>
                 <div className="hero-art" aria-hidden="true">
-                  <img className="hero-books-image" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80" alt="Students studying together with laptops" />
+                  <img
+                    className="hero-books-image"
+                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80"
+                    alt="Students studying together with laptops"
+                  />
                 </div>
               </section>
 
-              {/* Choose a Subject Section */}
               <section className="dashboard-subjects" style={{ marginTop: '2rem' }}>
                 <div className="subjects-heading">
                   <span className="panel-kicker">QUICK START</span>
                   <h2>Choose a subject</h2>
-                  <p>Pick any subject to begin a revision quiz[cite: 18].</p>
+                  <p>Pick any subject to begin a revision quiz.</p>
                 </div>
                 <div className="subjects-grid">
                   {schoolSubjects.map((subItem) => (
                     <button
                       key={subItem}
+                      type="button"
                       className="subject-chip"
                       onClick={() => {
                         startQuiz(subItem);
                         setActiveTab('Quizzes');
                       }}
                     >
-                      <span className="subject-icon-box"><FaBookOpen /></span>
+                      <span className="subject-icon-box">
+                        <FaBookOpen />
+                      </span>
                       <span>{subItem}</span>
                     </button>
                   ))}
@@ -470,26 +879,56 @@ export default function App() {
                     <h2>Your AI Socratic Tutor</h2>
                   </div>
                   <div className="heading-actions">
-                    <button className="square-action" aria-label="Open full tutor" onClick={() => openTab('AI Tutor')}><FaArrowRight /></button>
-                    <button className="square-action" aria-label="Clear conversation" onClick={() => setChatLog([{ sender: 'ai', text: 'Hi! Ask me anything you are learning, and I will explain it clearly.' }])}><FaRedoAlt /></button>
+                    <button
+                      type="button"
+                      className="square-action"
+                      aria-label="Open full tutor"
+                      onClick={() => openTab('AI Tutor')}
+                    >
+                      <FaArrowRight />
+                    </button>
+                    <button
+                      type="button"
+                      className="square-action"
+                      aria-label="Clear conversation"
+                      onClick={() =>
+                        setChatLog([
+                          { sender: 'ai', text: 'Hi! Ask me anything you are learning, and I will explain it clearly.' },
+                        ])
+                      }
+                    >
+                      <FaRedoAlt />
+                    </button>
                   </div>
                 </div>
 
                 <div className="chat-window">
                   <div className="chat-titlebar">
-                    <span className="ai-orb"><FaRobot /></span>
+                    <span className="ai-orb">
+                      <FaRobot />
+                    </span>
                     <span>AI Chat</span>
-                    <span className="online-indicator"><FaCircle /> Online</span>
+                    <span className="online-indicator">
+                      <FaCircle /> Online
+                    </span>
                   </div>
                   <div className="chat-messages" aria-live="polite">
                     {chatLog.map((message, index) => (
                       <div className={`message-row ${message.sender}`} key={`${index}-${message.text.slice(0, 10)}`}>
-                        {message.sender === 'ai' && <span className="message-avatar"><FaRobot /></span>}
+                        {message.sender === 'ai' && (
+                          <span className="message-avatar">
+                            <FaRobot />
+                          </span>
+                        )}
                         <div className="message-bubble">
                           {message.sender === 'ai' && <span className="message-label">AI · Socratic tutor</span>}
                           {message.text}
                         </div>
-                        {message.sender === 'user' && <span className="message-avatar user-avatar"><FaUser /></span>}
+                        {message.sender === 'user' && (
+                          <span className="message-avatar user-avatar">
+                            <FaUser />
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -511,7 +950,6 @@ export default function App() {
             </div>
           )}
 
-          {/* AI TUTOR TAB */}
           {activeTab === 'AI Tutor' && (
             <div className="tutor-full-view panel">
               <h2>Dedicated AI Socratic Tutor</h2>
@@ -525,27 +963,35 @@ export default function App() {
                   ))}
                 </div>
                 <form className="chat-composer" onSubmit={sendMessage}>
-                  <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Ask your AI tutor anything..." />
-                  <button type="submit"><FaPaperPlane /></button>
+                  <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Ask your AI tutor anything..."
+                  />
+                  <button type="submit">
+                    <FaPaperPlane />
+                  </button>
                 </form>
               </div>
             </div>
           )}
 
-          {/* QUIZZES TAB */}
           {activeTab === 'Quizzes' && (
             <div className="quizzes-container">
               {!quizStarted && !quizFinished && (
                 <div className="quiz-selector-panel panel">
-                  <h2>Select a Subject or Extra Course Quiz</h2>
-                  <p>Choose from our comprehensive question bank (12+ randomized questions per session with zero repetition and a 1-hour live countdown timer).</p>
-                  
+                  <h2>Select a Subject</h2>
+                  <p>Choose from our comprehensive question bank.</p>
+
                   <div className="quiz-category-group">
                     <h3>School Subjects</h3>
                     <div className="subjects-grid">
                       {schoolSubjects.map((subj) => (
-                        <button key={subj} className="subject-chip" onClick={() => startQuiz(subj)}>
-                          <span className="subject-icon-box"><FaBookOpen /></span> <span>{subj}</span>
+                        <button key={subj} type="button" className="subject-chip" onClick={() => startQuiz(subj)}>
+                          <span className="subject-icon-box">
+                            <FaBookOpen />
+                          </span>
+                          <span>{subj}</span>
                         </button>
                       ))}
                     </div>
@@ -553,8 +999,16 @@ export default function App() {
                     <h3>Extra Courses</h3>
                     <div className="subjects-grid">
                       {allExtraCourses.map((crs) => (
-                        <button key={crs.title} className="subject-chip extra-course" onClick={() => startQuiz(crs.title)}>
-                          <span className="subject-icon-box"><FaGraduationCap /></span> <span>{crs.title}</span>
+                        <button
+                          key={crs.title}
+                          type="button"
+                          className="subject-chip extra-course"
+                          onClick={() => startQuiz(crs.title)}
+                        >
+                          <span className="subject-icon-box">
+                            <FaGraduationCap />
+                          </span>
+                          <span>{crs.title}</span>
                         </button>
                       ))}
                     </div>
@@ -565,7 +1019,12 @@ export default function App() {
               {quizStarted && !quizFinished && (
                 <div className="quiz-runner panel">
                   <div className="quiz-header-bar">
-                    <h3>Quiz: {quizSubject}</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <button type="button" className="secondary-btn" onClick={exitQuiz}>
+                        Exit Quiz
+                      </button>
+                      <h3>Quiz: {quizSubject}</h3>
+                    </div>
                     <div className="quiz-timer">
                       ⏳ Time Left: <strong>{formatTime(timeLeft)}</strong>
                     </div>
@@ -578,10 +1037,13 @@ export default function App() {
                   {quizQuestions[currentQuestion] && (
                     <div className="question-box">
                       <h4>{quizQuestions[currentQuestion].question}</h4>
-                      {/* Vertical column options layout */}
+
                       <div className="options-column-list">
                         {quizQuestions[currentQuestion].options.map((opt, i) => (
-                          <label key={i} className={`option-row-label ${chosenAnswer === opt ? 'selected' : ''}`}>
+                          <label
+                            key={i}
+                            className={`option-row-label ${chosenAnswer === opt ? 'selected' : ''}`}
+                          >
                             <input
                               type="radio"
                               name="quiz-option"
@@ -593,7 +1055,13 @@ export default function App() {
                           </label>
                         ))}
                       </div>
-                      <button className="primary-btn" onClick={submitAnswer} disabled={!chosenAnswer} style={{ marginTop: '1.5rem' }}>
+                      <button
+                        type="button"
+                        className="primary-btn"
+                        onClick={submitAnswer}
+                        disabled={!chosenAnswer}
+                        style={{ marginTop: '1.5rem' }}
+                      >
                         {currentQuestion === quizQuestions.length - 1 ? 'Finish Quiz' : 'Next Question'}
                       </button>
                     </div>
@@ -605,16 +1073,35 @@ export default function App() {
                 <div className="quiz-results-panel panel">
                   <h2>Quiz Completed! 🎉</h2>
                   <div className="result-score-card">
-                    <p>Subject: <strong>{latestQuizResult.subject}</strong></p>
-                    <p>Score: <strong>{latestQuizResult.score} / {latestQuizResult.total}</strong></p>
-                    <p>Accuracy: <strong>{latestQuizResult.percentage}%</strong></p>
+                    <p>
+                      Subject: <strong>{latestQuizResult.subject}</strong>
+                    </p>
+                    <p>
+                      Score:{' '}
+                      <strong>
+                        {latestQuizResult.score} / {latestQuizResult.total}
+                      </strong>
+                    </p>
+                    <p>
+                      Accuracy: <strong>{latestQuizResult.percentage}%</strong>
+                    </p>
                   </div>
 
-                  <div className="result-action-buttons" style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
-                    <button className="primary-btn" onClick={() => setReviewMode(true)}>
-                      🔍 Review Answers & Corrections
+                  <div
+                    className="result-action-buttons"
+                    style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexWrap: 'wrap' }}
+                  >
+                    <button type="button" className="primary-btn" onClick={() => setReviewMode(true)}>
+                      🔍 Review Answers
                     </button>
-                    <button className="secondary-btn" onClick={() => setQuizFinished(false)}>
+                    <button
+                      type="button"
+                      className="secondary-btn"
+                      onClick={() => {
+                        setQuizFinished(false);
+                        setQuizStarted(false);
+                      }}
+                    >
                       Back to Quizzes
                     </button>
                   </div>
@@ -622,7 +1109,7 @@ export default function App() {
                   {latestQuizResult.percentage >= 80 && (
                     <div className="badge-earned-box" style={{ marginTop: '1.5rem' }}>
                       <p>🏆 You earned an official Achievement Badge!</p>
-                      <button className="primary-btn" onClick={saveBadgeAsSvg}>
+                      <button type="button" className="primary-btn" onClick={saveBadgeAsSvg}>
                         Download Badge Certificate (.svg)
                       </button>
                     </div>
@@ -638,7 +1125,12 @@ export default function App() {
                         <div className="opportunity-reveal">
                           <h3>🎊 Congratulations on a Perfect Score! 🎊</h3>
                           <p>You have unlocked exclusive access to technical training programs and tech scholarships.</p>
-                          <a href="https://www.uncommon.org" target="_blank" rel="noopener noreferrer" className="opportunity-link-btn">
+                          <a
+                            href="https://www.uncommon.org"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="opportunity-link-btn"
+                          >
                             Explore Opportunities at Uncommon.org <FaArrowRight />
                           </a>
                         </div>
@@ -650,135 +1142,141 @@ export default function App() {
 
               {quizFinished && reviewMode && (
                 <div className="quiz-review-panel panel">
-                  <h2>Detailed Answer Review & Corrections</h2>
+                  <h2>Detailed Answer Review</h2>
                   <p>Review every question, see where you got things right or wrong, and study the correct explanations.</p>
-                  
-                  <div className="review-list" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '1.5rem' }}>
+
+                  <div
+                    className="review-list"
+                    style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '1.5rem' }}
+                  >
                     {quizResponses.map((item, idx) => (
-                      <div key={idx} className={`review-card ${item.correct ? 'correct-card' : 'incorrect-card'}`}>
+                      <div
+                        key={idx}
+                        className={`review-card ${item.correct ? 'correct-card' : 'incorrect-card'}`}
+                      >
                         <div className="review-question-header">
                           <span className="q-num">Q{idx + 1}</span>
                           <h4>{item.question}</h4>
                           <span className={`status-badge ${item.correct ? 'correct' : 'incorrect'}`}>
-                            {item.correct ? <><FaCheck /> Correct</> : <><FaTimes /> Incorrect</>}
+                            {item.correct ? (
+                              <>
+                                <FaCheck /> Correct
+                              </>
+                            ) : (
+                              <>
+                                <FaTimes /> Incorrect
+                              </>
+                            )}
                           </span>
                         </div>
-                        <p><strong>Your Answer:</strong> <span className={item.correct ? 'correct-text' : 'incorrect-text'}>{item.selected}</span></p>
+                        <p>
+                          <strong>Your Answer:</strong>{' '}
+                          <span className={item.correct ? 'correct-text' : 'incorrect-text'}>{item.selected}</span>
+                        </p>
                         {!item.correct && (
-                          <p><strong>Correct Answer:</strong> <span className="correct-text">{item.answer}</span></p>
+                          <p>
+                            <strong>Correct Answer:</strong> <span className="correct-text">{item.answer}</span>
+                          </p>
                         )}
                         {item.explanation && (
                           <div className="explanation-box">
-                            <strong>Explanation / Correction:</strong> {item.explanation}
+                            <strong>Explanation:</strong> {item.explanation}
                           </div>
                         )}
                       </div>
                     ))}
                   </div>
 
-                  <button className="primary-btn" onClick={() => setReviewMode(false)} style={{ marginTop: '2rem' }}>
-                    ← Back to Summary
+                  <button
+                    type="button"
+                    className="primary-btn"
+                    onClick={() => {
+                      setReviewMode(false);
+                      setQuizFinished(false);
+                      setQuizStarted(false);
+                    }}
+                    style={{ marginTop: '1.5rem' }}
+                  >
+                    Back to Quizzes
                   </button>
                 </div>
               )}
             </div>
           )}
 
-          {/* RESOURCES TAB */}
           {activeTab === 'Resources' && (
-            <div className="resources-container panel">
-              <h2>Extra Learning Courses & Study Notes</h2>
-              <p>Explore coding, web design, python problem-solving, and complete O/A-Level notes and syllabus topics at your own pace.</p>
-
-              <div className="extra-courses-grid" style={{ marginBottom: '2rem' }}>
-                {allExtraCourses.map((course) => (
-                  <div key={course.title} className="extra-course-card">
-                    <span className="badge-tag">Beginner</span>
-                    <h3>{course.title}</h3>
-                    <p>{course.description}</p>
-                    <button className="primary-btn" onClick={() => startQuiz(course.title)}>
-                      Explore course <FaArrowRight />
-                    </button>
-                    <div className="course-card-footer">
-                      <FaTrophy style={{ color: '#d89a3d' }} /> Score at least 80% on the course test to earn the winner badge and unlock the opportunity link[cite: 7].
-                    </div>
-                  </div>
+            <div className="panel">
+              <h2>Study Resources</h2>
+              <p>Select a subject to generate topic notes.</p>
+              <div className="subjects-grid">
+                {Object.keys(allLearningNotes).map((subj) => (
+                  <button
+                    key={subj}
+                    type="button"
+                    className={`subject-chip ${resourceSubject === subj ? 'active' : ''}`}
+                    onClick={() => setResourceSubject(subj)}
+                  >
+                    <span>{subj}</span>
+                  </button>
                 ))}
               </div>
-
-              <div className="resource-subject-selector" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-                <label><strong>Select Subject Notes & Syllabus:</strong></label>
-                <select value={resourceSubject} onChange={(e) => setResourceSubject(e.target.value)} style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                  {schoolSubjects.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-
-              <div className="resources-grid">
-                <div className="resource-section">
-                  <h3>📖 Comprehensive Syllabus Notes & Topic Exercises</h3>
-                  {(allLearningNotes[resourceSubject] || [
-                    { topic: 'Number and operations', syllabus: 'Integers, fractions, decimals, percentages, ratio and proportion.' }
-                  ]).map((item, idx) => (
-                    <div key={idx} className="resource-item-card" style={{ background: '#f8f9fa', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #e9ecef' }}>
-                      <h4>{item.topic}</h4>
-                      <p>{item.syllabus}</p>
-                      <button className="small-btn" onClick={() => generateNotesForTopic(item)}>
-                        {generatingTopic === `${resourceSubject}:${item.topic}` ? 'Generating Notes...' : 'Generate detailed AI notes'}
-                      </button>
-                      {generatedNotes[`${resourceSubject}:${item.topic}`] && (
-                        <div className="generated-notes-box" style={{ marginTop: '0.75rem', background: '#e8f5e9', padding: '0.75rem', borderRadius: '6px', whiteSpace: 'pre-wrap', fontSize: '0.9rem' }}>
-                          {generatedNotes[`${resourceSubject}:${item.topic}`]}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="resource-section">
-                  <h3>📝 Revision Test Paper 1 & Paper 2 Practice Prompts</h3>
-                  <p className="muted-hint" style={{ fontSize: '0.85rem', color: '#6c757d', marginBottom: '1rem' }}>
-                    Practice structured data response (Paper 2) and multiple-choice concept checks (Paper 1).
-                  </p>
-                  {(paperTwoPrompts[resourceSubject] || [
-                    { title: 'Paper 2 Structured Scenario A', prompt: 'Analyze the primary case study and provide a detailed technical breakdown.' }
-                  ]).map((p2, idx) => (
-                    <div key={idx} className="paper2-card" style={{ background: '#f8f9fa', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #e9ecef' }}>
-                      <h4>{p2.title}</h4>
-                      <p>{p2.prompt}</p>
-                      <textarea 
-                        placeholder="Type your working notes or answers here..."
-                        value={paperDrafts[p2.title] || ''}
-                        onChange={(e) => setPaperDrafts({ ...paperDrafts, [p2.title]: e.target.value })}
-                        style={{ width: '100%', minHeight: '80px', marginTop: '0.5rem', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              {(allLearningNotes[resourceSubject] || []).map((item) => {
+                const key = `${resourceSubject}:${item.topic}`;
+                return (
+                  <div key={item.topic} className="resource-section" style={{ marginTop: '1rem' }}>
+                    <h3>{item.topic}</h3>
+                    <p>{item.syllabus}</p>
+                    <button
+                      type="button"
+                      className="primary-btn"
+                      onClick={() => generateNotesForTopic(item)}
+                      disabled={generatingTopic === key}
+                    >
+                      {generatingTopic === key ? 'Generating…' : 'Generate Notes'}
+                    </button>
+                    {generatedNotes[key] && <pre style={{ whiteSpace: 'pre-wrap' }}>{generatedNotes[key]}</pre>}
+                  </div>
+                );
+              })}
             </div>
           )}
 
-          {/* PROFILE TAB */}
           {activeTab === 'Profile' && (
             <div className="profile-container panel">
-              <h2>Student Profile & Achievements</h2>
+              <h2>Student Profile &amp; Achievements</h2>
               <div className="profile-details-card">
                 <div className="profile-avatar-section">
                   <div className="avatar-preview" onClick={() => profileImageInput.current?.click()}>
                     {profilePhoto ? <img src={profilePhoto} alt="Profile" /> : <FaUser />}
                   </div>
-                  <input type="file" ref={profileImageInput} onChange={loadProfilePhoto} accept="image/*" style={{ display: 'none' }} />
-                  <button className="small-btn" onClick={() => profileImageInput.current?.click()}>Change Photo</button>
+                  <input
+                    type="file"
+                    ref={profileImageInput}
+                    onChange={loadProfilePhoto}
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                  />
+                  <button
+                    type="button"
+                    className="small-btn"
+                    onClick={() => profileImageInput.current?.click()}
+                  >
+                    Change Photo
+                  </button>
                 </div>
                 <div className="profile-info-text">
                   <h3>{session.user.name}</h3>
-                  <p>Email: <strong>{session.user.email}</strong></p>
-                  <p>Activity Status: <span className="badge-status">Working Hard & Excelling</span></p>
+                  <p>
+                    Email: <strong>{session.user.email}</strong>
+                  </p>
+                  <p>
+                    Activity Status: <span className="badge-status">Working Hard &amp; Excelling</span>
+                  </p>
                 </div>
               </div>
 
               <div className="achievements-section">
-                <h3>Earned Badges & Academic Record</h3>
+                <h3>Earned Badges &amp; Academic Record</h3>
                 {earnedBadges.length === 0 ? (
                   <p>No badges earned yet. Take a quiz and score 80% or higher to earn certificates!</p>
                 ) : (
@@ -787,7 +1285,9 @@ export default function App() {
                       <div key={idx} className="earned-badge-card">
                         <FaTrophy style={{ color: badge.color }} />
                         <h4>{badge.label}</h4>
-                        <p>Score: {badge.score}/{badge.total} ({badge.subject})</p>
+                        <p>
+                          Score: {badge.score}/{badge.total} ({badge.subject})
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -803,7 +1303,9 @@ export default function App() {
         <span>madirenLearn AI</span>
         <span className="footer-separator">·</span>
         <span>Learning, made personal.</span>
-        <span className="footer-status"><FaCircle style={{ color: '#2b8a3e', fontSize: '0.5rem' }} /> All progress saved</span>
+        <span className="footer-status">
+          <FaCircle style={{ color: '#2b8a3e', fontSize: '0.5rem' }} /> All progress saved
+        </span>
       </footer>
     </div>
   );

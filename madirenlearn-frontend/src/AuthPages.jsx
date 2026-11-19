@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { FaArrowRight, FaGraduationCap, FaLock, FaEnvelope, FaUser } from 'react-icons/fa';
+﻿import { useState } from 'react';
+import { FaArrowRight, FaEnvelope, FaGraduationCap, FaLock, FaUser } from 'react-icons/fa';
 import { API_BASE, apiFetch } from './api';
 
 export function AuthPage({ onAuthenticated }) {
@@ -20,7 +20,6 @@ export function AuthPage({ onAuthenticated }) {
         method: 'POST',
         body: JSON.stringify(mode === 'login' ? { email, password } : { name, email, password }),
       });
-      // Diagnostic: capture the raw response so we can see exactly what the backend returns.
       const rawText = await response.text().catch(() => '');
       let data;
       try {
@@ -28,12 +27,11 @@ export function AuthPage({ onAuthenticated }) {
       } catch {
         data = {};
       }
-      console.log(`[madirenlearn auth:${mode}] status=${response.status} body=`, data);
       if (!response.ok) throw new Error(data.error || 'Unable to sign in. Please check your details and try again.');
-      if (!data.token || !data.user) throw new Error('The server did not return a sign-in session (no token or user in response). Please try again.');
+      if (!data.token || !data.user) throw new Error('The server did not return a sign-in session. Please try again.');
+      
       localStorage.setItem('madirenlearn-token', data.token);
       localStorage.setItem('madirenlearn-user', JSON.stringify(data.user));
-      // Pass the full session object { token, user } to handleAuthenticated
       onAuthenticated({ token: data.token, user: data.user });
     } catch (requestError) {
       setError(requestError instanceof TypeError ? 'Cannot reach the MadirenLearn server. Check that the backend is running.' : requestError.message);
@@ -45,18 +43,59 @@ export function AuthPage({ onAuthenticated }) {
   return (
     <main className="auth-shell">
       <section className="auth-card">
-        <div className="auth-brand"><span className="auth-cap"><FaGraduationCap /></span><span>madirenLearn <strong>AI</strong></span></div>
-        <span className="auth-kicker">YOUR PERSONAL STUDY SPACE</span>
-        <h1>{mode === 'login' ? 'Welcome back' : 'Create your account'}</h1>
-        <p className="auth-intro">{mode === 'login' ? 'Sign in to continue learning, practicing, and growing.' : 'Join MadirenLearn AI and start building your learning journey.'}</p>
+        <div className="auth-brand-header">
+          <div className="auth-cap-box"><FaGraduationCap /></div>
+          <span className="auth-brand-name">madirenLearn <strong>AI</strong></span>
+        </div>
+
+        <div className="auth-titles">
+          <span className="auth-kicker">YOUR PERSONAL STUDY SPACE</span>
+          <h1>{mode === 'login' ? 'Welcome back' : 'Create your account'}</h1>
+          <p className="auth-intro">{mode === 'login' ? 'Sign in to continue learning, practicing, and growing.' : 'Join MadirenLearn AI and start building your learning journey.'}</p>
+        </div>
+
         <form className="auth-form" onSubmit={submit}>
-          {mode === 'register' && <label><span>Your name</span><div className="auth-input-wrap"><FaUser /><input autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} placeholder="Student name" required maxLength={100} /></div></label>}
-          <label><span>Email address</span><div className="auth-input-wrap"><FaEnvelope /><input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" required /></div></label>
-          <label><span>Password</span><div className="auth-input-wrap"><FaLock /><input type="password" autoComplete={mode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="At least 8 characters" minLength={8} required /></div></label>
+          {mode === 'register' && (
+            <div className="auth-field-group">
+              <label>Your name</label>
+              <div className="auth-input-wrap">
+                <div className="auth-icon-badge"><FaUser /></div>
+                <input type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Student name" required maxLength={100} />
+              </div>
+            </div>
+          )}
+
+          <div className="auth-field-group">
+            <label>Email address</label>
+            <div className="auth-input-wrap">
+              <div className="auth-icon-badge"><FaEnvelope /></div>
+              <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+            </div>
+          </div>
+
+          <div className="auth-field-group">
+            <label>Password</label>
+            <div className="auth-input-wrap">
+              <div className="auth-icon-badge"><FaLock /></div>
+              <input type="password" autoComplete={mode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" minLength={8} required />
+            </div>
+          </div>
+
           {error && <p className="auth-error" role="alert">{error}</p>}
-          <button className="auth-submit" disabled={busy}>{busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'} <FaArrowRight /></button>
+
+          <button className="auth-submit" disabled={busy}>
+            <span>{busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'}</span>
+            <FaArrowRight />
+          </button>
         </form>
-        <p className="auth-switch">{mode === 'login' ? 'New to MadirenLearn?' : 'Already have an account?'} <button onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}>{mode === 'login' ? 'Create account' : 'Sign in'}</button></p>
+
+        <p className="auth-switch">
+          {mode === 'login' ? 'New to MadirenLearn?' : 'Already have an account?'}{' '}
+          <button type="button" onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}>
+            {mode === 'login' ? 'Create account' : 'Sign in'}
+          </button>
+        </p>
+
         <p className="auth-footnote">A welcoming space for learning at your own pace.</p>
       </section>
     </main>
@@ -67,12 +106,17 @@ export function WelcomePage({ name, onEnter }) {
   return (
     <main className="welcome-screen">
       <section className="welcome-card">
-        <span className="welcome-cap"><FaGraduationCap /></span>
-        <span className="auth-kicker">MADIRENLEARN AI</span>
-        <h1>Welcome to madirenLearn AI</h1>
-        <h2 className="welcome-student">{name}!</h2>
-        <p>Your study space is ready. Explore your subjects, ask your tutor, or challenge yourself with a revision quiz.</p>
-        <button className="auth-submit" onClick={onEnter}>Enter Study Space <FaArrowRight /></button>
+        <div className="auth-brand-header">
+          <div className="auth-cap-box"><FaGraduationCap /></div>
+          <span className="auth-brand-name">madirenLearn <strong>AI</strong></span>
+        </div>
+        <span className="auth-kicker" style={{ marginTop: '0.5rem' }}>MADIRENLEARN AI</span>
+        <h1 className="welcome-heading">Welcome to madirenLearn AI, <span className="welcome-name-highlight">{name}!</span></h1>
+        <p className="welcome-body-text">Your study space is ready. Explore your subjects, ask your tutor, or challenge yourself with a revision quiz.</p>
+        <button className="auth-submit" onClick={onEnter}>
+          <span>Enter Study Space</span>
+          <FaArrowRight />
+        </button>
         <span className="welcome-redirect">Opening your study space shortly…</span>
       </section>
     </main>
