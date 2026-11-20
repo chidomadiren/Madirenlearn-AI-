@@ -17,7 +17,6 @@ import {
   FaRobot,
   FaSeedling,
   FaSignOutAlt,
-  FaStar,
   FaTimes,
   FaTrophy,
   FaUser,
@@ -31,7 +30,6 @@ import {
   additionalLearningNotes,
   extendedCourses,
   extendedCourseQuizBank,
-  paperTwoPrompts,
 } from './additionalLearning';
 import { API_BASE, apiFetch, clearSession, readSession } from './api';
 import { AuthPage, WelcomePage } from './AuthPages';
@@ -226,9 +224,7 @@ export function LandingPage({ onGetStarted, onLogin }) {
               <p>Build strong problem-solving skills from algebra to trigonometry.</p>
               <div className="course-author-row">
                 <span>madirenLearn AI</span>
-                <span className="course-rating">
-                  <FaStar style={{ color: '#f9d976' }} /> 4.9 (1.4K)
-                </span>
+                <span>Paper 1 &amp; 2</span>
               </div>
               <div className="course-footer-row">
                 <span>
@@ -249,9 +245,7 @@ export function LandingPage({ onGetStarted, onLogin }) {
               <p>Strengthen comprehension, grammar, and structured exam responses.</p>
               <div className="course-author-row">
                 <span>madirenLearn AI</span>
-                <span className="course-rating">
-                  <FaStar style={{ color: '#f9d976' }} /> 4.8 (1.1K)
-                </span>
+                <span>O-Level &amp; A-Level</span>
               </div>
               <div className="course-footer-row">
                 <span>
@@ -272,9 +266,7 @@ export function LandingPage({ onGetStarted, onLogin }) {
               <p>Review key biology, chemistry, and physics principles for exams.</p>
               <div className="course-author-row">
                 <span>madirenLearn AI</span>
-                <span className="course-rating">
-                  <FaStar style={{ color: '#f9d976' }} /> 4.7 (980)
-                </span>
+                <span>Core Syllabus</span>
               </div>
               <div className="course-footer-row">
                 <span>
@@ -295,9 +287,7 @@ export function LandingPage({ onGetStarted, onLogin }) {
               <p>Develop effective revision habits and practical tech foundations.</p>
               <div className="course-author-row">
                 <span>madirenLearn AI</span>
-                <span className="course-rating">
-                  <FaStar style={{ color: '#f9d976' }} /> 4.9 (1.2K)
-                </span>
+                <span>Skill Builder</span>
               </div>
               <div className="course-footer-row">
                 <span>
@@ -397,20 +387,37 @@ export default function App() {
   const [generatingTopic, setGeneratingTopic] = useState('');
   const [profilePhoto, setProfilePhoto] = useState(() => localStorage.getItem('madirenlearn-profile-photo') || '');
   const profileImageInput = useRef(null);
-  const [paperDrafts, setPaperDrafts] = useState({});
   const [earnedBadges, setEarnedBadges] = useState([]);
   const [invites] = useState([]);
   const [unlockedOpportunity, setUnlockedOpportunity] = useState(false);
+  const justAuthenticatedRef = useRef(false);
 
   const firstName = session?.user?.name?.trim().split(/\s+/)[0] || 'Tino';
 
   const handleAuthenticated = (newSession) => {
-    setSession(newSession);
+    justAuthenticatedRef.current = true;
+    const normalizedSession = newSession?.user
+      ? newSession
+      : {
+          token: newSession?.token || readSession()?.token || 'active-session',
+          user: newSession || readSession()?.user || { name: 'Student', email: '' },
+        };
+
+    if (normalizedSession.token) {
+      localStorage.setItem('madirenlearn-token', normalizedSession.token);
+    }
+    if (normalizedSession.user) {
+      localStorage.setItem('madirenlearn-user', JSON.stringify(normalizedSession.user));
+    }
+
+    setAuthChecking(false);
+    setSession(normalizedSession);
     setShowWelcome(true);
     setView('welcome');
   };
 
   const logout = async () => {
+    justAuthenticatedRef.current = false;
     try {
       await apiFetch(`${API_BASE}/auth/signout`, { method: 'POST' });
     } catch (error) {
@@ -458,7 +465,8 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (!session?.token) {
+    const existing = readSession();
+    if (!existing?.token) {
       setAuthChecking(false);
       return undefined;
     }
@@ -469,11 +477,17 @@ export default function App() {
         if (!response.ok) throw new Error(data.error || 'Could not verify your session.');
         if (active && data.user) {
           localStorage.setItem('madirenlearn-user', JSON.stringify(data.user));
-          setSession((current) => (current ? { ...current, user: data.user } : current));
+          setSession((current) =>
+            current ? { ...current, user: data.user } : { token: existing.token, user: data.user }
+          );
         }
       })
       .catch(() => {
-        if (active) logout();
+        if (active && !justAuthenticatedRef.current) {
+          clearSession();
+          setSession(null);
+          setView('landing');
+        }
       })
       .finally(() => {
         if (active) setAuthChecking(false);
@@ -481,7 +495,7 @@ export default function App() {
     return () => {
       active = false;
     };
-  }, [session?.token]);
+  }, []);
 
   useEffect(() => {
     if (!session || !showWelcome) return undefined;

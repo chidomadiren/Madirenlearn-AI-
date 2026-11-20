@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --primary-color: #1b4332;
   --primary-hover: #2d6a4f;
   --bg-color: #f4f6f4;
@@ -1880,4 +1880,27 @@ body {
   border-top: 1px solid var(--border-color);
   color: var(--text-muted);
   font-size: 0.85rem;
+}
+.ui-ux-bg {
+  background-image:
+    linear-gradient(180deg, rgba(11, 28, 22, 0.45) 0%, rgba(11, 28, 22, 0.15) 100%),
+    url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80');
+}
+
+.code-bg {
+  background-image:
+    linear-gradient(180deg, rgba(11, 28, 22, 0.45) 0%, rgba(11, 28, 22, 0.15) 100%),
+    url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=800&q=80');
+}
+
+.marketing-bg {
+  background-image:
+    linear-gradient(180deg, rgba(11, 28, 22, 0.45) 0%, rgba(11, 28, 22, 0.15) 100%),
+    url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80');
+}
+
+.data-bg {
+  background-image:
+    linear-gradient(180deg, rgba(11, 28, 22, 0.45) 0%, rgba(11, 28, 22, 0.15) 100%),
+    url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80');
 }
