@@ -1916,7 +1916,7 @@ body {
     url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80');
 }
 
-/* Make the graduation cap icon in the brand logo gold */
+
 .brand-logo svg,
 .brand-logo .brand-icon,
 .brand-logo .logo-cap,
@@ -1928,7 +1928,6 @@ body {
   flex-shrink: 0;
 }
 
-/* If the cap is an <img> or SVG with explicit fill attributes */
 .brand-logo svg path,
 .navbar-brand svg path {
   fill: #f9d976;
