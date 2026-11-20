@@ -33,6 +33,8 @@ import {
 } from './additionalLearning';
 import { API_BASE, apiFetch, clearSession, readSession } from './api';
 import { AuthPage, WelcomePage } from './AuthPages';
+import { DynamicQuizRunner } from './DynamicQuizRunner';
+
 
 const schoolSubjects = [...quizSubjects, ...Object.keys(additionalQuizBank)];
 
@@ -898,7 +900,9 @@ export default function App() {
                       className="square-action"
                       aria-label="Open full tutor"
                       onClick={() => openTab('AI Tutor')}
+                    
                     >
+              
                       <FaArrowRight />
                     </button>
                     <button
