@@ -1,0 +1,301 @@
+﻿/* ==========================================================================
+   MadirenLearn AI — Consolidated Responsive Stylesheet
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  max-width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Hamburger & Full-Screen Drawer
+   -------------------------------------------------------------------------- */
+.ml-mobile-nav-wrapper,
+.ml-dash-menu-wrapper {
+  display: none;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ml-hamburger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(249, 217, 118, 0.55);
+  background: rgba(255, 255, 255, 0.1);
+  color: #f9d976;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ml-mobile-drawer,
+.ml-dash-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2147483647;
+  background: linear-gradient(180deg, #143326 0%, #0d2219 100%);
+  color: #ffffff;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ml-mobile-drawer-top,
+.ml-dash-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(249, 217, 118, 0.25);
+}
+
+.ml-mobile-brand,
+.ml-dash-drawer-title {
+  color: #f9d976;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.ml-mobile-close-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(249, 217, 118, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f9d976;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ml-mobile-links-list,
+.ml-dash-link-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.ml-mobile-link,
+.ml-dash-link-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(249, 217, 118, 0.16);
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ml-mobile-link:hover,
+.ml-dash-link-btn.is-active,
+.ml-dash-link-btn:hover {
+  background: rgba(249, 217, 118, 0.18);
+  border-color: #f9d976;
+  color: #f9d976;
+}
+
+.ml-dash-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ml-dash-section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(249, 217, 118, 0.85);
+}
+
+.ml-mobile-auth-row {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.ml-mobile-login-btn,
+.ml-mobile-signup-btn {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ml-mobile-login-btn {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.ml-mobile-signup-btn {
+  background: #f9d976;
+  color: #143326;
+  border: none;
+}
+
+.ml-dash-signout-btn {
+  margin-top: 8px;
+  flex-shrink: 0;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   Tablet & Mobile Layout (<= 900px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .ml-mobile-nav-wrapper,
+  .ml-dash-menu-wrapper {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+
+  .brand,
+  [class*="brand"],
+  [class*="logo"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
+
+  .left-sidebar {
+    display: none !important;
+  }
+
+  .app-shell-sidebar {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .dashboard-single-column {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 14px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Small Phone Layout (<= 600px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+  /* Keep Log In / Sign Up compact so the hamburger stays clear of the right edge */
+  .landing-nav-actions button,
+  .nav-actions button,
+  .header-actions button {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+
+  .dashboard-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .dashboard-hero > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .dashboard-hero img {
+    width: 100%;
+    max-width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 14px;
+  }
+
+  /* Prevent profile email and activity badges from overflowing the card */
+  .dashboard-single-column * {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .dashboard-single-column p,
+  .dashboard-single-column span,
+  .dashboard-single-column div {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .ml-chat-form {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ml-chat-input,
+  .ml-topic-select,
+  .ml-primary-btn,
+  .ml-secondary-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}

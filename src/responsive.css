@@ -1,0 +1,242 @@
+﻿*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.app-shell,
+.main-layout,
+.dashboard-layout,
+.workspace-layout,
+.content-area,
+.main-content {
+  display: flex;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.sidebar,
+.side-nav,
+.left-sidebar {
+  flex-shrink: 0;
+}
+
+.main-content,
+.content-area,
+.workspace-main,
+main,
+[role="main"] {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  display: block;
+  visibility: visible;
+  opacity: 1;
+}
+
+.ml-subject-grid,
+.subject-grid,
+.subjects-grid,
+.cards-grid,
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+/* Tablet & Mobile Layout */
+@media (max-width: 900px) {
+  .app-shell,
+  .main-layout,
+  .dashboard-layout,
+  .workspace-layout {
+    flex-direction: column;
+    width: 100%;
+    height: auto !important;
+    min-height: 100vh;
+  }
+
+  .sidebar,
+  .side-nav,
+  .left-sidebar {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 220px;
+    overflow-y: auto;
+    border-right: none !important;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 12px !important;
+  }
+
+  .main-content,
+  .content-area,
+  .workspace-main,
+  main,
+  [role="main"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 60vh;
+    overflow: visible !important;
+    padding: 14px !important;
+  }
+}
+
+/* Small Phone Layout */
+@media (max-width: 600px) {
+  .ml-card,
+  .card,
+  .socratic-chat-card,
+  .quiz-card {
+    padding: 14px !important;
+    border-radius: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .ml-heading,
+  h1,
+  h2 {
+    font-size: clamp(1.15rem, 5vw, 1.5rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  .ml-chat-bubble,
+  .socratic-bubble,
+  .chat-bubble {
+    max-width: 94% !important;
+  }
+
+  .ml-chat-form,
+  .socratic-input-form,
+  .chat-form {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ml-chat-input,
+  .socratic-input,
+  .ml-topic-select {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .ml-primary-btn,
+  .ml-secondary-btn,
+  .socratic-send-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ml-quiz-topbar,
+  .socratic-chat-header,
+  .ml-tutor-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+}
+
+/* Mobile Navigation Drawer */
+.ml-mobile-nav-wrapper {
+  display: none;
+  position: relative;
+}
+
+.ml-hamburger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(249, 217, 118, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f9d976;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ml-mobile-drawer {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: #143326;
+  border-top: 1px solid rgba(249, 217, 118, 0.25);
+  border-bottom: 2px solid #f9d976;
+  padding: 14px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+.ml-mobile-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ml-mobile-link:hover {
+  background: rgba(249, 217, 118, 0.16);
+  color: #f9d976;
+}
+
+.ml-mobile-auth-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ml-mobile-login-btn,
+.ml-mobile-signup-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ml-mobile-login-btn {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.ml-mobile-signup-btn {
+  background: #f9d976;
+  color: #143326;
+  border: none;
+}
+
+@media (max-width: 900px) {
+  .ml-mobile-nav-wrapper {
+    display: inline-flex;
+    align-items: center;
+  }
+}

@@ -34,6 +34,17 @@ import {
 import { API_BASE, apiFetch, clearSession, readSession } from './api';
 import { AuthPage, WelcomePage } from './AuthPages';
 import { DynamicQuizRunner } from './DynamicQuizRunner';
+import { AITutorSection } from './AITutorSection';
+import './madirenInteractive.css';
+import {
+  SubjectAndQuizFlow,
+  ChatGPTStyleTutor,
+  RevisionTestsSection,
+  StudyResourcesNotes,
+} from './MadirenInteractiveSuite';
+import './responsive.css';
+import MobileNavMenu from './MobileNavMenu';
+import DashboardMobileMenu from './DashboardMobileMenu';
 
 
 const schoolSubjects = [...quizSubjects, ...Object.keys(additionalQuizBank)];
@@ -105,6 +116,11 @@ export function LandingPage({ onGetStarted, onLogin }) {
           <button type="button" className="landing-signup-btn" onClick={onGetStarted}>
             Sign Up
           </button>
+          <MobileNavMenu
+            onNavigate={(item) => item.view ? window.scrollTo({ behavior: 'smooth', block: 'start', top: 0 }) : null}
+            onOpenLogin={onLogin}
+            onOpenSignup={onGetStarted}
+          />
         </div>
       </header>
 
@@ -713,6 +729,16 @@ export default function App() {
             madirenLearn <strong style={{ color: '#f9d976' }}>AI</strong>
           </span>
         </button>
+
+        <DashboardMobileMenu
+          studyTabs={['Dashboard', 'AI Tutor', 'Quizzes', 'Resources', 'Profile']}
+          revisionSubjects={['Shona', 'Mathematics', 'English', 'Combined Science']}
+          activeTab={activeTab}
+          activeSubject={subject}
+          onSelectTab={setActiveTab}
+          onSelectSubject={() => setActiveTab('Dashboard')}
+          onSignOut={logout}
+        />
 
         <div className="account-actions">
           <button

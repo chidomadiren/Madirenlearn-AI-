@@ -94,10 +94,10 @@ const askGemini = async (prompt) => {
 
         if (status === 503 || status === 429 || status === 500) {
           if (attempt < 2) await sleep(1000);
-          continue; // retry once, then try the next model
+          continue; 
         }
-        if (status === 404 || isTimeout(error) || !status) break; // go straight to the next model
-        throw error; // bad key or bad request: retrying will not help
+        if (status === 404 || isTimeout(error) || !status) break; 
+        throw error; 
       }
     }
   }

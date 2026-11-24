@@ -380,6 +380,11 @@ export default function App() {
   const [timeLeft, setTimeLeft] = useState(1800);
   const [quizTimerActive, setQuizTimerActive] = useState(false);
 
+  // Start Assignment staging state
+  const [startAssignmentOpen, setStartAssignmentOpen] = useState(false);
+  const [startAssignmentSubject, setStartAssignmentSubject] = useState('');
+  const [startAssignmentQuestionCount, setStartAssignmentQuestionCount] = useState(10);
+
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [resourceSubject, setResourceSubject] = useState('Mathematics');
@@ -545,6 +550,28 @@ export default function App() {
     setTimeLeft(1800);
     setQuizTimerActive(true);
     setUnlockedOpportunity(false);
+  };
+
+  const openStartAssignment = (subject) => {
+    setStartAssignmentSubject(subject);
+    const bank = allQuizBank[subject] || quizBank.Shona || [];
+    const defaultCount = bank.length > 0 ? Math.min(10, bank.length) : 10;
+    setStartAssignmentQuestionCount(defaultCount);
+    setStartAssignmentOpen(true);
+  };
+
+  const startAssignmentQuiz = () => {
+    const subject = startAssignmentSubject;
+    const questionCount = startAssignmentQuestionCount;
+    // Calculate time limit: 60 seconds per question
+    const timeLimitSeconds = questionCount * 60;
+    setTimeLeft(timeLimitSeconds);
+    setQuizTimerActive(true);
+    setQuizStarted(true);
+    setQuizFinished(false);
+    setReviewMode(false);
+    setUnlockedOpportunity(false);
+    setStartAssignmentOpen(false);
   };
 
   const exitQuiz = () => {
@@ -1001,7 +1028,7 @@ export default function App() {
                     <h3>School Subjects</h3>
                     <div className="subjects-grid">
                       {schoolSubjects.map((subj) => (
-                        <button key={subj} type="button" className="subject-chip" onClick={() => startQuiz(subj)}>
+                        <button key={subj} type="button" className="subject-chip" onClick={() => openStartAssignment(subj)}>
                           <span className="subject-icon-box">
                             <FaBookOpen />
                           </span>
@@ -1017,7 +1044,7 @@ export default function App() {
                           key={crs.title}
                           type="button"
                           className="subject-chip extra-course"
-                          onClick={() => startQuiz(crs.title)}
+                          onClick={() => openStartAssignment(crs.title)}
                         >
                           <span className="subject-icon-box">
                             <FaGraduationCap />
@@ -1025,6 +1052,49 @@ export default function App() {
                           <span>{crs.title}</span>
                         </button>
                       ))}
+                    </div>
+                  </div>
+                </div>
+              )
+
+              {startAssignmentOpen && !quizStarted && !quizFinished && (
+                <div className="start-assignment-panel panel">
+                  <div className="start-assignment-card">
+                    <h2>Start Assignment</h2>
+                    <p>Select how many questions you'd like to practice</p>
+                    <div className="start-assignment-details">
+                      <div className="start-assignment-subject">
+                        <strong>{startAssignmentSubject}</strong>
+                        {' '}
+                        <small>Quiz Timer: {formatTime(startAssignmentQuestionCount * 60)}</small>
+                      </div>
+                      <label className="question-count-label">
+                        Questions:
+                        <input
+                          type="number"
+                          min="1"
+                          max={Math.max(1, (allQuizBank[startAssignmentSubject] || quizBank.Shona || []).length || 10)}
+                          value={startAssignmentQuestionCount}
+                          onChange={(e) => setStartAssignmentQuestionCount(Number(e.target.value))}
+                        />
+                      </label>
+                    </div>
+                    <div className="start-assignment-actions">
+                      <button
+                        type="button"
+                        className="primary-btn"
+                        onClick={startAssignmentQuiz}
+                        disabled={startAssignmentQuestionCount < 1}
+                      >
+                        Start Quiz
+                      </button>
+                      <button
+                        type="button"
+                        className="secondary-btn"
+                        onClick={() => setStartAssignmentOpen(false)}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 </div>
