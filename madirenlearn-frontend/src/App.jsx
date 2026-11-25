@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import {
   FaArrowRight,
   FaBell,
@@ -45,7 +45,7 @@ import {
 import './responsive.css';
 import MobileNavMenu from './MobileNavMenu';
 import DashboardMobileMenu from './DashboardMobileMenu';
-
+import { formatTutorText } from './formatTutorText';
 
 const schoolSubjects = [...quizSubjects, ...Object.keys(additionalQuizBank)];
 
@@ -200,7 +200,7 @@ export function LandingPage({ onGetStarted, onLogin }) {
           </div>
           <div>
             <h4>Learn at Your Pace</h4>
-            <p>Practice anytime with focused 30-minute revision sessions.</p>
+            <p>Practice anytime with focused revision sessions.</p>
           </div>
         </div>
 
@@ -560,7 +560,7 @@ export default function App() {
     setQuizStarted(true);
     setQuizFinished(false);
     setReviewMode(false);
-    setTimeLeft(1800);
+    setTimeLeft(70);
     setQuizTimerActive(true);
     setUnlockedOpportunity(false);
   };
@@ -810,7 +810,7 @@ export default function App() {
 
           <div className="sidebar-section-title revision-tests-title">REVISION TESTS</div>
           <div className="sidebar-subject-list">
-            {['Shona', 'Mathematics', 'English', 'Combined Science'].map((sub) => (
+            {['Shona', 'Mathematics', 'English', 'Combined Science', 'Accounts'].map((sub) => (
               <button
                 key={sub}
                 type="button"
@@ -1003,6 +1003,9 @@ export default function App() {
                   {chatLog.map((message, index) => (
                     <div className={`message-row ${message.sender}`} key={index}>
                       <div className="message-bubble">{message.text}</div>
+                      <div className="tutor-message-body" style={{ whiteSpace: 'pre-line', lineHeight: 1.65 }}>
+  {formatTutorText(message.text)}
+</div>
                     </div>
                   ))}
                 </div>
